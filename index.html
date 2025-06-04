@@ -17,6 +17,8 @@
             --warning-color: #ffc107;
             --secondary-color: #6c757d;
             --info-color: #17a2b8;
+            --option-highlight-color: #0056b3;
+            --option-highlight-bg: rgba(0, 123, 255, 0.1);
         }
 
         [data-theme="dark"] {
@@ -31,6 +33,8 @@
             --warning-color: #ffc107;
             --secondary-color: #6c757d;
             --info-color: #17a2b8;
+            --option-highlight-color: #66b3ff;
+            --option-highlight-bg: rgba(102, 179, 255, 0.15);
         }
 
         * {
@@ -635,6 +639,21 @@
             margin-bottom: 10px;
         }
 
+        .tip-option-highlight {
+            display: inline-block;
+            font-weight: bold;
+            color: var(--option-highlight-color);
+            background: var(--option-highlight-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 1px;
+            font-size: 0.95em;
+            border: 1px solid var(--option-highlight-color);
+            text-shadow: none;
+            min-width: 20px;
+            text-align: center;
+        }
+
         .results-container {
             display: none;
             text-align: center;
@@ -922,6 +941,12 @@
             .important-notes h4 {
                 font-size: 14px;
             }
+
+            .tip-option-highlight {
+                padding: 1px 4px;
+                font-size: 0.9em;
+                min-width: 18px;
+            }
         }
     </style>
 </head>
@@ -957,14 +982,14 @@
         "options": ["London", "Berlin", "Paris", "Madrid"],
         "type": "single",
         "correct_answer": 2,
-        "tip": "Paris is known as the City of Light."
+        "tip": "[[opt3]] is correct because Paris is the capital and largest city of France, known as the City of Light. [[opt1]] is the capital of the UK, [[opt2]] is the capital of Germany, and [[opt4]] is the capital of Spain."
       },
       {
-        "question": "Which of these are programming languages?",
-        "options": ["JavaScript", "HTML", "Python", "CSS"],
+        "question": "Which programming languages are primarily used for web development?",
+        "options": ["JavaScript", "C++", "Python", "Java"],
         "type": "multiple",
         "correct_answers": [0, 2],
-        "tip": "JavaScript and Python are programming languages, while HTML and CSS are markup/styling languages."
+        "tip": "[[opt1]] and [[opt3]] are correct. [[opt1]] is essential for front-end web development and also used on the server-side with Node.js. [[opt3]] is widely used for web development with frameworks like Django and Flask. [[opt2]] is mainly used for system programming, and [[opt4]] is primarily used for enterprise applications."
       }
     ]
   }
@@ -978,7 +1003,7 @@
                             <li><span class="field-name">type</span> <span class="field-required">(required)</span>: Either <code>"single"</code> (one correct answer) or <code>"multiple"</code> (multiple correct answers)</li>
                             <li><span class="field-name">correct_answer</span> <span class="field-required">(for single)</span>: Index number of the correct option (0-based)</li>
                             <li><span class="field-name">correct_answers</span> <span class="field-required">(for multiple)</span>: Array of index numbers for correct options (0-based)</li>
-                            <li><span class="field-name">tip</span> <span class="field-optional">(optional)</span>: Additional explanation shown after answering</li>
+                            <li><span class="field-name">tip</span> <span class="field-optional">(optional)</span>: Additional explanation shown after answering with dynamic option references</li>
                         </ul>
                     </div>
 
@@ -988,7 +1013,19 @@
                             <li>Array indices start from 0 (first option = 0, second = 1, etc.)</li>
                             <li>For single-choice questions, use <code>correct_answer</code> with a number</li>
                             <li>For multiple-choice questions, use <code>correct_answers</code> with an array of numbers</li>
+                            <li>In tips, use <code>[[opt1]]</code>, <code>[[opt2]]</code>, etc. to reference options dynamically</li>
+                            <li><code>[[opt1]]</code> refers to the 1st option in the array, <code>[[opt2]]</code> to the 2nd, and so on</li>
+                            <li>Option references automatically adapt to shuffled order (e.g., if shuffled, <code>[[opt1]]</code> becomes the appropriate letter)</li>
                             <li>Tips are optional but recommended for better learning experience</li>
+                        </ul>
+                    </div>
+
+                    <div class="field-explanations">
+                        <h4>Tip Format Examples:</h4>
+                        <ul>
+                            <li><strong>Basic reference:</strong> <code>"[[opt2]] is correct because..."</code></li>
+                            <li><strong>Multiple references:</strong> <code>"[[opt1]] and [[opt3]] are correct. [[opt2]] is incorrect because..."</code></li>
+                            <li><strong>Mixed with letters:</strong> <code>"Option [[opt1]] is the best choice, while [[opt4]] would cause issues."</code></li>
                         </ul>
                     </div>
                 </div>
@@ -1126,6 +1163,7 @@ You can also right-click and select 'Paste'."></textarea>
                 this.questions = [];
                 this.currentState = 'setup'; // 'setup', 'quiz', 'results'
                 this.quizResults = null;
+                this.optionMappings = {}; // Store mapping of original indices to current positions
                 
                 this.initializeElements();
                 this.attachEventListeners();
@@ -1372,6 +1410,7 @@ You can also right-click and select 'Paste'."></textarea>
                     startTime: this.startTime,
                     elapsedTime: this.startTime ? Date.now() - this.startTime : 0,
                     quizResults: this.quizResults,
+                    optionMappings: this.optionMappings,
                     timestamp: Date.now()
                 };
 
@@ -1435,6 +1474,7 @@ You can also right-click and select 'Paste'."></textarea>
                     this.userAnswers = progressData.userAnswers;
                     this.submittedAnswers = progressData.submittedAnswers;
                     this.startTime = Date.now() - progressData.elapsedTime;
+                    this.optionMappings = progressData.optionMappings || {};
                     this.currentState = 'quiz';
 
                     // Show quiz interface
@@ -1499,28 +1539,35 @@ You can also right-click and select 'Paste'."></textarea>
                 this.clearProgress();
 
                 this.questions = [...this.quizData.quiz.questions];
+                this.optionMappings = {};
                 
                 if (this.shuffleQuestionsToggle.checked) {
                     this.shuffleArray(this.questions);
                 }
                 
                 if (this.shuffleAnswersToggle.checked) {
-                    this.questions.forEach(question => {
+                    this.questions.forEach((question, questionIndex) => {
                         const originalOptions = [...question.options];
                         const shuffledIndices = [...Array(originalOptions.length).keys()];
                         this.shuffleArray(shuffledIndices);
                         
-                        const indexMap = {};
-                        shuffledIndices.forEach((newIndex, oldIndex) => {
-                            indexMap[oldIndex] = newIndex;
+                        // Create mapping: original index -> new position
+                        const optionMapping = {};
+                        shuffledIndices.forEach((originalIndex, newPosition) => {
+                            optionMapping[originalIndex] = newPosition;
                         });
                         
+                        // Store the mapping for this question
+                        this.optionMappings[questionIndex] = optionMapping;
+                        
+                        // Apply the shuffle to options
                         question.options = shuffledIndices.map(i => originalOptions[i]);
                         
+                        // Update correct answers to match new positions
                         if (question.type === 'single') {
-                            question.correct_answer = indexMap[question.correct_answer];
+                            question.correct_answer = optionMapping[question.correct_answer];
                         } else if (question.type === 'multiple') {
-                            question.correct_answers = question.correct_answers.map(i => indexMap[i]);
+                            question.correct_answers = question.correct_answers.map(i => optionMapping[i]);
                         }
                     });
                 }
@@ -1776,10 +1823,33 @@ You can also right-click and select 'Paste'."></textarea>
                     '✗ Incorrect. Check the correct answer(s) highlighted above.';
             }
 
+            processOptionReferences(tipText, questionIndex) {
+                if (!tipText) return tipText;
+                
+                // Get the mapping for this question
+                const optionMapping = this.optionMappings[questionIndex] || {};
+                
+                // Replace [[opt1]], [[opt2]], etc. with highlighted letters
+                return tipText.replace(/\[\[opt(\d+)\]\]/g, (match, optionNumber) => {
+                    const originalIndex = parseInt(optionNumber) - 1; // Convert to 0-based index
+                    
+                    // If shuffling was enabled, get the current position of this option
+                    let currentPosition = originalIndex;
+                    if (Object.keys(optionMapping).length > 0) {
+                        currentPosition = optionMapping[originalIndex];
+                    }
+                    
+                    // Convert position to letter (A, B, C, etc.)
+                    const letter = this.getOptionLetter(currentPosition);
+                    return `<span class="tip-option-highlight">${letter}</span>`;
+                });
+            }
+
             showTip() {
                 const question = this.questions[this.currentQuestionIndex];
                 if (question.tip) {
-                    this.tipText.textContent = question.tip;
+                    const processedTip = this.processOptionReferences(question.tip, this.currentQuestionIndex);
+                    this.tipText.innerHTML = processedTip; // Changed from textContent to innerHTML
                     this.tipContainer.classList.add('show');
                 }
             }
