@@ -1154,7 +1154,8 @@ You can also right-click and select 'Paste'."></textarea>
     <script>
         class QuizApp {
             constructor() {
-                this.quizData = null;
+                this.originalQuizData = null; // Store the original, unmodified quiz data
+                this.quizData = null; // Working copy that can be modified
                 this.currentQuestionIndex = 0;
                 this.userAnswers = {};
                 this.submittedAnswers = {};
@@ -1319,7 +1320,12 @@ You can also right-click and select 'Paste'."></textarea>
                 reader.onload = (e) => {
                     try {
                         const jsonText = e.target.result;
-                        this.quizData = JSON.parse(jsonText);
+                        const parsedData = JSON.parse(jsonText);
+                        
+                        // Store original data and create working copy
+                        this.originalQuizData = JSON.parse(JSON.stringify(parsedData)); // Deep clone
+                        this.quizData = JSON.parse(JSON.stringify(parsedData)); // Deep clone
+                        
                         this.validateQuizData();
                         
                         this.fileStatus.textContent = `✓ Loaded: ${file.name} (${this.quizData.quiz.questions.length} questions)`;
@@ -1347,7 +1353,12 @@ You can also right-click and select 'Paste'."></textarea>
                 }
 
                 try {
-                    this.quizData = JSON.parse(jsonText);
+                    const parsedData = JSON.parse(jsonText);
+                    
+                    // Store original data and create working copy
+                    this.originalQuizData = JSON.parse(JSON.stringify(parsedData)); // Deep clone
+                    this.quizData = JSON.parse(JSON.stringify(parsedData)); // Deep clone
+                    
                     this.validateQuizData();
                     
                     this.fileStatus.textContent = `✓ JSON loaded (${this.quizData.quiz.questions.length} questions)`;
@@ -1402,7 +1413,7 @@ You can also right-click and select 'Paste'."></textarea>
 
                 const progressData = {
                     currentState: this.currentState,
-                    quizData: this.quizData,
+                    originalQuizData: this.originalQuizData, // Save original data
                     questions: this.questions,
                     currentQuestionIndex: this.currentQuestionIndex,
                     userAnswers: this.userAnswers,
@@ -1411,6 +1422,10 @@ You can also right-click and select 'Paste'."></textarea>
                     elapsedTime: this.startTime ? Date.now() - this.startTime : 0,
                     quizResults: this.quizResults,
                     optionMappings: this.optionMappings,
+                    shuffleSettings: {
+                        shuffleQuestions: this.shuffleQuestionsToggle.checked,
+                        shuffleAnswers: this.shuffleAnswersToggle.checked
+                    },
                     timestamp: Date.now()
                 };
 
@@ -1467,8 +1482,8 @@ You can also right-click and select 'Paste'."></textarea>
                     const savedProgress = localStorage.getItem('quizProgress');
                     const progressData = JSON.parse(savedProgress);
 
-                    // Restore quiz state
-                    this.quizData = progressData.quizData;
+                    // Restore quiz state from original data
+                    this.originalQuizData = progressData.originalQuizData;
                     this.questions = progressData.questions;
                     this.currentQuestionIndex = progressData.currentQuestionIndex;
                     this.userAnswers = progressData.userAnswers;
@@ -1476,6 +1491,12 @@ You can also right-click and select 'Paste'."></textarea>
                     this.startTime = Date.now() - progressData.elapsedTime;
                     this.optionMappings = progressData.optionMappings || {};
                     this.currentState = 'quiz';
+
+                    // Restore shuffle settings
+                    if (progressData.shuffleSettings) {
+                        this.shuffleQuestionsToggle.checked = progressData.shuffleSettings.shuffleQuestions;
+                        this.shuffleAnswersToggle.checked = progressData.shuffleSettings.shuffleAnswers;
+                    }
 
                     // Show quiz interface
                     this.setupPanel.style.display = 'none';
@@ -1530,7 +1551,7 @@ You can also right-click and select 'Paste'."></textarea>
             }
 
             startQuiz() {
-                if (!this.quizData) {
+                if (!this.originalQuizData) {
                     alert('Please load a quiz file first');
                     return;
                 }
@@ -1538,8 +1559,10 @@ You can also right-click and select 'Paste'."></textarea>
                 // Clear any existing progress when starting fresh
                 this.clearProgress();
 
+                // Always start from original, unmodified data
+                this.quizData = JSON.parse(JSON.stringify(this.originalQuizData)); // Deep clone
                 this.questions = [...this.quizData.quiz.questions];
-                this.optionMappings = {};
+                this.optionMappings = {}; // Reset mappings
                 
                 if (this.shuffleQuestionsToggle.checked) {
                     this.shuffleArray(this.questions);
@@ -1570,6 +1593,9 @@ You can also right-click and select 'Paste'."></textarea>
                             question.correct_answers = question.correct_answers.map(i => optionMapping[i]);
                         }
                     });
+                } else {
+                    // If shuffling is disabled, ensure no mappings exist
+                    this.optionMappings = {};
                 }
                 
                 this.currentQuestionIndex = 0;
@@ -1826,16 +1852,22 @@ You can also right-click and select 'Paste'."></textarea>
             processOptionReferences(tipText, questionIndex) {
                 if (!tipText) return tipText;
                 
-                // Get the mapping for this question
+                // Get the original question from the original quiz data to get the correct tip
+                const originalQuestion = this.originalQuizData.quiz.questions[questionIndex];
+                if (!originalQuestion) return tipText;
+                
+                // Get the mapping for this question (if shuffling was enabled)
                 const optionMapping = this.optionMappings[questionIndex] || {};
                 
                 // Replace [[opt1]], [[opt2]], etc. with highlighted letters
                 return tipText.replace(/\[\[opt(\d+)\]\]/g, (match, optionNumber) => {
                     const originalIndex = parseInt(optionNumber) - 1; // Convert to 0-based index
                     
-                    // If shuffling was enabled, get the current position of this option
+                    // Determine the current position of this option
                     let currentPosition = originalIndex;
-                    if (Object.keys(optionMapping).length > 0) {
+                    
+                    // If shuffling was enabled and we have mappings, use them
+                    if (Object.keys(optionMapping).length > 0 && optionMapping.hasOwnProperty(originalIndex)) {
                         currentPosition = optionMapping[originalIndex];
                     }
                     
@@ -1846,10 +1878,10 @@ You can also right-click and select 'Paste'."></textarea>
             }
 
             showTip() {
-                const question = this.questions[this.currentQuestionIndex];
-                if (question.tip) {
-                    const processedTip = this.processOptionReferences(question.tip, this.currentQuestionIndex);
-                    this.tipText.innerHTML = processedTip; // Changed from textContent to innerHTML
+                const originalQuestion = this.originalQuizData.quiz.questions[this.currentQuestionIndex];
+                if (originalQuestion && originalQuestion.tip) {
+                    const processedTip = this.processOptionReferences(originalQuestion.tip, this.currentQuestionIndex);
+                    this.tipText.innerHTML = processedTip;
                     this.tipContainer.classList.add('show');
                 }
             }
@@ -1928,6 +1960,10 @@ You can also right-click and select 'Paste'."></textarea>
                 this.quizContainer.style.display = 'none';
                 this.resultsContainer.style.display = 'none';
                 this.setupPanel.style.display = 'block';
+                
+                // Reset file input and status when going back to setup
+                this.fileInput.value = '';
+                this.jsonTextarea.value = '';
             }
 
             toggleDarkMode(enabled) {
