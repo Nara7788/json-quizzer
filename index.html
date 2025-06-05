@@ -1564,6 +1564,11 @@ You can also right-click and select 'Paste'."></textarea>
                 this.questions = [...this.quizData.quiz.questions];
                 this.optionMappings = {}; // Reset mappings
                 
+                // Add original indices to questions BEFORE shuffling
+                this.questions.forEach((question, index) => {
+                    question.originalIndex = index;
+                });
+                
                 if (this.shuffleQuestionsToggle.checked) {
                     this.shuffleArray(this.questions);
                 }
@@ -1580,7 +1585,7 @@ You can also right-click and select 'Paste'."></textarea>
                             optionMapping[originalIndex] = newPosition;
                         });
                         
-                        // Store the mapping for this question
+                        // Store the mapping for this question using its current position in the shuffled array
                         this.optionMappings[questionIndex] = optionMapping;
                         
                         // Apply the shuffle to options
@@ -1721,10 +1726,17 @@ You can also right-click and select 'Paste'."></textarea>
                 
                 if (isSubmitted) {
                     this.showAnswerFeedback();
-                    if (question.tip) {
+                    if (this.getCurrentOriginalQuestion().tip) {
                         this.showTip();
                     }
                 }
+            }
+
+            // Helper method to get the original question for the current question
+            getCurrentOriginalQuestion() {
+                const currentQuestion = this.questions[this.currentQuestionIndex];
+                const originalIndex = currentQuestion.originalIndex;
+                return this.originalQuizData.quiz.questions[originalIndex];
             }
 
             updateOptionSelection() {
@@ -1785,8 +1797,8 @@ You can also right-click and select 'Paste'."></textarea>
                 this.submittedAnswers[this.currentQuestionIndex] = true;
                 this.showAnswerFeedback();
                 
-                const question = this.questions[this.currentQuestionIndex];
-                if (question.tip) {
+                const originalQuestion = this.getCurrentOriginalQuestion();
+                if (originalQuestion.tip) {
                     this.showTip();
                 }
                 
@@ -1849,12 +1861,8 @@ You can also right-click and select 'Paste'."></textarea>
                     '✗ Incorrect. Check the correct answer(s) highlighted above.';
             }
 
-            processOptionReferences(tipText, questionIndex) {
+            processOptionReferences(tipText, originalQuestion, questionIndex) {
                 if (!tipText) return tipText;
-                
-                // Get the original question from the original quiz data to get the correct tip
-                const originalQuestion = this.originalQuizData.quiz.questions[questionIndex];
-                if (!originalQuestion) return tipText;
                 
                 // Get the mapping for this question (if shuffling was enabled)
                 const optionMapping = this.optionMappings[questionIndex] || {};
@@ -1878,9 +1886,13 @@ You can also right-click and select 'Paste'."></textarea>
             }
 
             showTip() {
-                const originalQuestion = this.originalQuizData.quiz.questions[this.currentQuestionIndex];
+                const originalQuestion = this.getCurrentOriginalQuestion();
                 if (originalQuestion && originalQuestion.tip) {
-                    const processedTip = this.processOptionReferences(originalQuestion.tip, this.currentQuestionIndex);
+                    const processedTip = this.processOptionReferences(
+                        originalQuestion.tip, 
+                        originalQuestion, 
+                        this.currentQuestionIndex
+                    );
                     this.tipText.innerHTML = processedTip;
                     this.tipContainer.classList.add('show');
                 }
