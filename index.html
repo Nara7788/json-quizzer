@@ -19,6 +19,11 @@
             --info-color: #17a2b8;
             --option-highlight-color: #0056b3;
             --option-highlight-bg: rgba(0, 123, 255, 0.1);
+            --code-bg: #f4f4f4;
+            --code-text: #c7254e;
+            --blockquote-border: #ddd;
+            --table-border: #dee2e6;
+            --table-header-bg: #f8f9fa;
         }
 
         [data-theme="dark"] {
@@ -35,6 +40,11 @@
             --info-color: #17a2b8;
             --option-highlight-color: #66b3ff;
             --option-highlight-bg: rgba(102, 179, 255, 0.15);
+            --code-bg: #3a3a3a;
+            --code-text: #ff6b6b;
+            --blockquote-border: #555;
+            --table-border: #404040;
+            --table-header-bg: #404040;
         }
 
         * {
@@ -151,7 +161,7 @@
         }
 
         .json-format-content.expanded {
-            max-height: 2000px;
+            max-height: 3000px;
         }
 
         .json-format-info.expanded .toggle-icon {
@@ -169,6 +179,30 @@
             overflow-x: auto;
             white-space: pre;
             line-height: 1.4;
+            position: relative;
+        }
+
+        .copy-json-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+        .copy-json-btn:hover {
+            opacity: 1;
+        }
+
+        .copy-json-btn.copied {
+            background: var(--success-color);
         }
 
         .field-explanations {
@@ -247,6 +281,46 @@
             content: "⚠";
             position: absolute;
             left: 0;
+        }
+
+        .html-features {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid var(--success-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .html-features h4 {
+            color: var(--success-color);
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .html-features ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .html-features li {
+            margin-bottom: 6px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .html-features li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+
+        .example-tip {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 14px;
         }
 
         .file-input-wrapper {
@@ -504,6 +578,12 @@
             cursor: pointer;
         }
 
+        [data-theme="dark"] .option input[type="checkbox"],
+        [data-theme="dark"] .option input[type="radio"] {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+        }
+
         .option input[type="radio"] {
             border-radius: 50%;
         }
@@ -616,6 +696,7 @@
             border-radius: 8px;
             display: none;
             animation: slideDown 0.3s ease-out;
+            line-height: 1.6;
         }
 
         .tip-container.show {
@@ -637,6 +718,190 @@
             font-weight: bold;
             color: var(--warning-color);
             margin-bottom: 10px;
+        }
+
+        .tip-content {
+            color: var(--text-color);
+        }
+
+        /* Enhanced styling for HTML content in tips - Dark/Light mode compatible */
+        .tip-content h1, .tip-content h2, .tip-content h3, 
+        .tip-content h4, .tip-content h5, .tip-content h6 {
+            color: var(--warning-color);
+            margin: 10px 0 5px 0;
+            font-weight: 600;
+        }
+
+        .tip-content h1 { font-size: 1.5em; }
+        .tip-content h2 { font-size: 1.4em; }
+        .tip-content h3 { font-size: 1.3em; }
+        .tip-content h4 { font-size: 1.2em; }
+        .tip-content h5 { font-size: 1.1em; }
+        .tip-content h6 { font-size: 1em; }
+
+        .tip-content p {
+            margin: 8px 0;
+            color: var(--text-color);
+        }
+
+        .tip-content ul, .tip-content ol {
+            margin: 8px 0;
+            padding-left: 20px;
+            color: var(--text-color);
+        }
+
+        .tip-content li {
+            margin: 4px 0;
+            color: var(--text-color);
+        }
+
+        .tip-content a {
+            color: var(--primary-color);
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        .tip-content a:hover {
+            color: var(--primary-hover);
+        }
+
+        .tip-content a:visited {
+            color: var(--secondary-color);
+        }
+
+        .tip-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin: 8px 0;
+            display: block;
+            border: 1px solid var(--border-color);
+        }
+
+        .tip-content blockquote {
+            border-left: 4px solid var(--warning-color);
+            padding-left: 15px;
+            margin: 10px 0;
+            font-style: italic;
+            color: var(--secondary-color);
+            background: rgba(255, 193, 7, 0.05);
+            padding: 10px 15px;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .tip-content code {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-family: 'Courier New', Monaco, monospace;
+            font-size: 0.9em;
+            color: var(--code-text);
+        }
+
+        .tip-content pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .tip-content pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        .tip-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+            border: 1px solid var(--table-border);
+            background: var(--card-bg);
+        }
+
+        .tip-content th, .tip-content td {
+            border: 1px solid var(--table-border);
+            padding: 8px 12px;
+            text-align: left;
+            color: var(--text-color);
+        }
+
+        .tip-content th {
+            background: var(--table-header-bg);
+            font-weight: 600;
+            color: var(--warning-color);
+        }
+
+        .tip-content .highlight {
+            background: rgba(255, 193, 7, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .tip-content .highlight {
+            background: rgba(255, 193, 7, 0.2);
+        }
+
+        .tip-content .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid;
+        }
+
+        .tip-content .alert-info {
+            background: rgba(23, 162, 184, 0.1);
+            border-left-color: var(--info-color);
+            color: var(--text-color);
+        }
+
+        .tip-content .alert-info strong {
+            color: var(--info-color);
+        }
+
+        .tip-content .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            border-left-color: var(--success-color);
+            color: var(--text-color);
+        }
+
+        .tip-content .alert-success strong {
+            color: var(--success-color);
+        }
+
+        .tip-content .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left-color: var(--warning-color);
+            color: var(--text-color);
+        }
+
+        .tip-content .alert-warning strong {
+            color: var(--warning-color);
+        }
+
+        .tip-content .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            border-left-color: var(--danger-color);
+            color: var(--text-color);
+        }
+
+        .tip-content .alert-danger strong {
+            color: var(--danger-color);
+        }
+
+        .tip-content strong, .tip-content b {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .tip-content em, .tip-content i {
+            color: var(--text-color);
+            font-style: italic;
         }
 
         .tip-option-highlight {
@@ -934,11 +1199,19 @@
 
             .json-example {
                 font-size: 12px;
-                padding: 12px;
+                padding: 12px 30px 12px 12px;
+            }
+
+            .copy-json-btn {
+                top: 5px;
+                right: 5px;
+                padding: 3px 6px;
+                font-size: 10px;
             }
 
             .field-explanations h4,
-            .important-notes h4 {
+            .important-notes h4,
+            .html-features h4 {
                 font-size: 14px;
             }
 
@@ -946,6 +1219,18 @@
                 padding: 1px 4px;
                 font-size: 0.9em;
                 min-width: 18px;
+            }
+
+            .tip-content img {
+                max-width: 100%;
+            }
+
+            .tip-content table {
+                font-size: 14px;
+            }
+
+            .tip-content th, .tip-content td {
+                padding: 6px 8px;
             }
         }
     </style>
@@ -974,7 +1259,7 @@
                 <div class="json-format-content" id="jsonFormatContent">
                     <p>Your quiz file should follow this structure:</p>
                     
-                    <div class="json-example">{
+                    <div class="json-example" id="jsonExample">{
   "quiz": {
     "questions": [
       {
@@ -982,18 +1267,18 @@
         "options": ["London", "Berlin", "Paris", "Madrid"],
         "type": "single",
         "correct_answer": 2,
-        "tip": "[[opt3]] is correct because Paris is the capital and largest city of France, known as the City of Light. [[opt1]] is the capital of the UK, [[opt2]] is the capital of Germany, and [[opt4]] is the capital of Spain."
+        "tip": "[[opt3]] is correct because Paris is the capital and largest city of France, known as the &lt;strong&gt;City of Light&lt;/strong&gt;. [[opt1]] is the capital of the UK, [[opt2]] is the capital of Germany, and [[opt4]] is the capital of Spain."
       },
       {
         "question": "Which programming languages are primarily used for web development?",
         "options": ["JavaScript", "C++", "Python", "Java"],
         "type": "multiple",
         "correct_answers": [0, 2],
-        "tip": "[[opt1]] and [[opt3]] are correct. [[opt1]] is essential for front-end web development and also used on the server-side with Node.js. [[opt3]] is widely used for web development with frameworks like Django and Flask. [[opt2]] is mainly used for system programming, and [[opt4]] is primarily used for enterprise applications."
+        "tip": "&lt;h4&gt;Web Development Languages&lt;/h4&gt;&lt;p&gt;[[opt1]] and [[opt3]] are correct:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;[[opt1]]&lt;/strong&gt; - Essential for front-end web development and also used on the server-side with Node.js&lt;/li&gt;&lt;li&gt;&lt;strong&gt;[[opt3]]&lt;/strong&gt; - Widely used for web development with frameworks like Django and Flask&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The other options:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;[[opt2]] is mainly used for system programming&lt;/li&gt;&lt;li&gt;[[opt4]] is primarily used for enterprise applications&lt;/li&gt;&lt;/ul&gt;&lt;div class='alert alert-info'&gt;💡 Learn more at &lt;a href='https://developer.mozilla.org'&gt;MDN Web Docs&lt;/a&gt;&lt;/div&gt;"
       }
     ]
   }
-}</div>
+}<button class="copy-json-btn" onclick="copyJsonExample()">Copy</button></div>
 
                     <div class="field-explanations">
                         <h4>Field Explanations:</h4>
@@ -1003,8 +1288,43 @@
                             <li><span class="field-name">type</span> <span class="field-required">(required)</span>: Either <code>"single"</code> (one correct answer) or <code>"multiple"</code> (multiple correct answers)</li>
                             <li><span class="field-name">correct_answer</span> <span class="field-required">(for single)</span>: Index number of the correct option (0-based)</li>
                             <li><span class="field-name">correct_answers</span> <span class="field-required">(for multiple)</span>: Array of index numbers for correct options (0-based)</li>
-                            <li><span class="field-name">tip</span> <span class="field-optional">(optional)</span>: Additional explanation shown after answering with dynamic option references</li>
+                            <li><span class="field-name">tip</span> <span class="field-optional">(optional)</span>: Additional explanation shown after answering with dynamic option references and <strong>full HTML support</strong></li>
                         </ul>
+                    </div>
+
+                    <div class="html-features">
+                        <h4>HTML Features Supported in Tips:</h4>
+                        <ul>
+                            <li><strong>Text formatting:</strong> <code>&lt;b&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;u&gt;</code>, <code>&lt;mark&gt;</code></li>
+                            <li><strong>Headings:</strong> <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> for organizing content</li>
+                            <li><strong>Lists:</strong> <code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>, <code>&lt;li&gt;</code> for bullet points and numbered lists</li>
+                            <li><strong>Links:</strong> <code>&lt;a href="..."&gt;</code> for external resources</li>
+                            <li><strong>Images:</strong> <code>&lt;img src="..." alt="..."&gt;</code> for visual explanations</li>
+                            <li><strong>Code:</strong> <code>&lt;code&gt;</code> and <code>&lt;pre&gt;</code> for code snippets</li>
+                            <li><strong>Tables:</strong> <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;th&gt;</code>, <code>&lt;td&gt;</code> for data</li>
+                            <li><strong>Custom classes:</strong> <code>alert</code>, <code>highlight</code> for special styling</li>
+                            <li><strong>Inline styles:</strong> <code>style="..."</code> for custom formatting</li>
+                        </ul>
+                    </div>
+
+                    <div class="field-explanations">
+                        <h4>HTML Tip Examples:</h4>
+                        <div class="example-tip">
+                            <strong>Basic HTML:</strong><br>
+                            <code>"tip": "[[opt2]] is &lt;strong&gt;correct&lt;/strong&gt; because it's the &lt;em&gt;most common&lt;/em&gt; approach."</code>
+                        </div>
+                        <div class="example-tip">
+                            <strong>With Links:</strong><br>
+                            <code>"tip": "[[opt1]] is correct. Learn more at &lt;a href='https://example.com'&gt;this resource&lt;/a&gt;."</code>
+                        </div>
+                        <div class="example-tip">
+                            <strong>With Lists:</strong><br>
+                            <code>"tip": "&lt;h4&gt;Explanation&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;[[opt1]] is correct because...&lt;/li&gt;&lt;li&gt;[[opt2]] is wrong because...&lt;/li&gt;&lt;/ul&gt;"</code>
+                        </div>
+                        <div class="example-tip">
+                            <strong>With Custom Styling:</strong><br>
+                            <code>"tip": "&lt;div class='alert alert-info'&gt;💡 [[opt3]] is the best choice because...&lt;/div&gt;"</code>
+                        </div>
                     </div>
 
                     <div class="important-notes">
@@ -1015,17 +1335,11 @@
                             <li>For multiple-choice questions, use <code>correct_answers</code> with an array of numbers</li>
                             <li>In tips, use <code>[[opt1]]</code>, <code>[[opt2]]</code>, etc. to reference options dynamically</li>
                             <li><code>[[opt1]]</code> refers to the 1st option in the array, <code>[[opt2]]</code> to the 2nd, and so on</li>
-                            <li>Option references automatically adapt to shuffled order (e.g., if shuffled, <code>[[opt1]]</code> becomes the appropriate letter)</li>
-                            <li>Tips are optional but recommended for better learning experience</li>
-                        </ul>
-                    </div>
-
-                    <div class="field-explanations">
-                        <h4>Tip Format Examples:</h4>
-                        <ul>
-                            <li><strong>Basic reference:</strong> <code>"[[opt2]] is correct because..."</code></li>
-                            <li><strong>Multiple references:</strong> <code>"[[opt1]] and [[opt3]] are correct. [[opt2]] is incorrect because..."</code></li>
-                            <li><strong>Mixed with letters:</strong> <code>"Option [[opt1]] is the best choice, while [[opt4]] would cause issues."</code></li>
+                            <li>Option references automatically adapt to shuffled order</li>
+                            <li>HTML tags must be properly escaped in JSON: <code>&lt;</code> instead of <code>&lt;</code>, <code>&gt;</code> instead of <code>&gt;</code></li>
+                            <li>Use <code>&amp;quot;</code> for quotes inside HTML attributes within JSON strings</li>
+                            <li>Images and external links will work if the URLs are accessible</li>
+                            <li>Custom CSS classes like <code>alert</code>, <code>alert-info</code>, <code>alert-success</code>, <code>alert-warning</code>, <code>alert-danger</code>, and <code>highlight</code> are available</li>
                         </ul>
                     </div>
                 </div>
@@ -1123,7 +1437,7 @@ You can also right-click and select 'Paste'."></textarea>
                 
                 <div id="tipContainer" class="tip-container">
                     <div class="tip-title">💡 Tip:</div>
-                    <div id="tipText"></div>
+                    <div id="tipText" class="tip-content"></div>
                 </div>
                 
                 <div class="navigation">
@@ -1152,6 +1466,56 @@ You can also right-click and select 'Paste'."></textarea>
     </div>
 
     <script>
+        // Copy JSON example function
+        function copyJsonExample() {
+            const jsonText = document.getElementById('jsonExample').textContent.replace(/Copy$/, '').trim();
+            const button = document.querySelector('.copy-json-btn');
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(jsonText).then(() => {
+                    button.textContent = 'Copied!';
+                    button.classList.add('copied');
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                        button.classList.remove('copied');
+                    }, 2000);
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(jsonText, button);
+                });
+            } else {
+                fallbackCopyTextToClipboard(jsonText, button);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text, button) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+                button.textContent = 'Failed';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
         class QuizApp {
             constructor() {
                 this.originalQuizData = null; // Store the original, unmodified quiz data
@@ -1893,6 +2257,8 @@ You can also right-click and select 'Paste'."></textarea>
                         originalQuestion, 
                         this.currentQuestionIndex
                     );
+                    
+                    // Set the HTML content with full HTML support
                     this.tipText.innerHTML = processedTip;
                     this.tipContainer.classList.add('show');
                 }
@@ -2010,6 +2376,13 @@ You can also right-click and select 'Paste'."></textarea>
                     this.shuffleAnswersToggle.checked = settings.shuffleAnswers || false;
                     this.darkModeToggle.checked = settings.darkMode || false;
                     this.toggleDarkMode(settings.darkMode);
+                }
+
+                // Load expanded state
+                const expanded = localStorage.getItem('jsonFormatExpanded');
+                if (expanded === 'true') {
+                    this.jsonFormatInfo.classList.add('expanded');
+                    this.jsonFormatContent.classList.add('expanded');
                 }
             }
         }
