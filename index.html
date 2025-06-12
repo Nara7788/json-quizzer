@@ -161,7 +161,7 @@
         }
 
         .json-format-content.expanded {
-            max-height: 3000px;
+            max-height: 3000px; /* Increased to accommodate more content */
         }
 
         .json-format-info.expanded .toggle-icon {
@@ -776,6 +776,7 @@
             margin: 8px 0;
             display: block;
             border: 1px solid var(--border-color);
+            cursor: zoom-in; /* Indicate image is clickable for full screen */
         }
 
         .tip-content blockquote {
@@ -812,7 +813,7 @@
             background: none;
             border: none;
             padding: 0;
-            color: var(--text-color);
+            color: var(--text-color); /* Changed from var(--code-text) to var(--text-color) for pre blocks */
         }
 
         .tip-content table {
@@ -1069,6 +1070,35 @@
             color: var(--warning-color);
         }
 
+        /* Styles for full-screen image viewer */
+        .image-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none; /* Initially hidden, shown with .show */
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            cursor: zoom-out;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .image-viewer.show {
+            display: flex;
+        }
+
+        #fullScreenImage {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            cursor: default;
+            user-select: none;
+        }
+
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -1222,7 +1252,7 @@
             }
 
             .tip-content img {
-                max-width: 100%;
+                max-width: 100%; /* Ensures responsiveness in tip */
             }
 
             .tip-content table {
@@ -1274,7 +1304,7 @@
         "options": ["JavaScript", "C++", "Python", "Java"],
         "type": "multiple",
         "correct_answers": [0, 2],
-        "tip": "&lt;h4&gt;Web Development Languages&lt;/h4&gt;&lt;p&gt;[[opt1]] and [[opt3]] are correct:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;[[opt1]]&lt;/strong&gt; - Essential for front-end web development and also used on the server-side with Node.js&lt;/li&gt;&lt;li&gt;&lt;strong&gt;[[opt3]]&lt;/strong&gt; - Widely used for web development with frameworks like Django and Flask&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The other options:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;[[opt2]] is mainly used for system programming&lt;/li&gt;&lt;li&gt;[[opt4]] is primarily used for enterprise applications&lt;/li&gt;&lt;/ul&gt;&lt;div class='alert alert-info'&gt;💡 Learn more at &lt;a href='https://developer.mozilla.org'&gt;MDN Web Docs&lt;/a&gt;&lt;/div&gt;"
+        "tip": "&lt;h4&gt;Web Development Languages&lt;/h4&gt;&lt;p&gt;[[opt1]] and [[opt3]] are correct:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;[[opt1]]&lt;/strong&gt; - Essential for front-end web development and also used on the server-side with Node.js&lt;/li&gt;&lt;li&gt;&lt;strong&gt;[[opt3]]&lt;/strong&gt; - Widely used for web development with frameworks like Django and Flask&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The other options:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;[[opt2]] is mainly used for system programming&lt;/li&gt;&lt;li&gt;[[opt4]] is primarily used for enterprise applications&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Here is a relevant image:&lt;/p&gt;&lt;img src='https://via.placeholder.com/300x150.png?text=Sample+Diagram' alt='Sample Diagram' style='max-width: 200px;'&gt;&lt;div class='alert alert-info'&gt;💡 Learn more at &lt;a href='https://developer.mozilla.org'&gt;MDN Web Docs&lt;/a&gt;&lt;/div&gt;"
       }
     ]
   }
@@ -1299,7 +1329,7 @@
                             <li><strong>Headings:</strong> <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> for organizing content</li>
                             <li><strong>Lists:</strong> <code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>, <code>&lt;li&gt;</code> for bullet points and numbered lists</li>
                             <li><strong>Links:</strong> <code>&lt;a href="..."&gt;</code> for external resources</li>
-                            <li><strong>Images:</strong> <code>&lt;img src="..." alt="..."&gt;</code> for visual explanations</li>
+                            <li><strong>Images:</strong> <code>&lt;img src="..." alt="..."&gt;</code> for visual explanations (clickable for full screen)</li>
                             <li><strong>Code:</strong> <code>&lt;code&gt;</code> and <code>&lt;pre&gt;</code> for code snippets</li>
                             <li><strong>Tables:</strong> <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;th&gt;</code>, <code>&lt;td&gt;</code> for data</li>
                             <li><strong>Custom classes:</strong> <code>alert</code>, <code>highlight</code> for special styling</li>
@@ -1316,6 +1346,10 @@
                         <div class="example-tip">
                             <strong>With Links:</strong><br>
                             <code>"tip": "[[opt1]] is correct. Learn more at &lt;a href='https://example.com'&gt;this resource&lt;/a&gt;."</code>
+                        </div>
+                         <div class="example-tip">
+                            <strong>With Images (clickable):</strong><br>
+                            <code>"tip": "Here's a diagram: &lt;img src='path/to/image.png' alt='Diagram explanation' style='max-width: 150px;'&gt;"</code>
                         </div>
                         <div class="example-tip">
                             <strong>With Lists:</strong><br>
@@ -1336,9 +1370,10 @@
                             <li>In tips, use <code>[[opt1]]</code>, <code>[[opt2]]</code>, etc. to reference options dynamically</li>
                             <li><code>[[opt1]]</code> refers to the 1st option in the array, <code>[[opt2]]</code> to the 2nd, and so on</li>
                             <li>Option references automatically adapt to shuffled order</li>
-                            <li>HTML tags must be properly escaped in JSON: <code>&lt;</code> instead of <code>&lt;</code>, <code>&gt;</code> instead of <code>&gt;</code></li>
+                            <li>HTML tags must be properly escaped in JSON: <code>&lt;</code> instead of <code><</code>, <code>&gt;</code> instead of <code>></code></li>
                             <li>Use <code>&amp;quot;</code> for quotes inside HTML attributes within JSON strings</li>
                             <li>Images and external links will work if the URLs are accessible</li>
+                            <li>Images in tips are clickable to open in a full-screen viewer</li>
                             <li>Custom CSS classes like <code>alert</code>, <code>alert-info</code>, <code>alert-success</code>, <code>alert-warning</code>, <code>alert-danger</code>, and <code>highlight</code> are available</li>
                         </ul>
                     </div>
@@ -1465,6 +1500,11 @@ You can also right-click and select 'Paste'."></textarea>
         </div>
     </div>
 
+    <!-- Full-screen image viewer -->
+    <div id="imageViewer" class="image-viewer">
+        <img id="fullScreenImage" src="" alt="Full screen view">
+    </div>
+
     <script>
         // Copy JSON example function
         function copyJsonExample() {
@@ -1518,18 +1558,22 @@ You can also right-click and select 'Paste'."></textarea>
 
         class QuizApp {
             constructor() {
-                this.originalQuizData = null; // Store the original, unmodified quiz data
-                this.quizData = null; // Working copy that can be modified
+                this.originalQuizData = null;
+                this.quizData = null;
                 this.currentQuestionIndex = 0;
                 this.userAnswers = {};
                 this.submittedAnswers = {};
                 this.startTime = null;
                 this.timerInterval = null;
                 this.questions = [];
-                this.currentState = 'setup'; // 'setup', 'quiz', 'results'
+                this.currentState = 'setup';
                 this.quizResults = null;
-                this.optionMappings = {}; // Store mapping of original indices to current positions
+                this.optionMappings = {};
                 
+                this.originalBodyOverflow = ''; // For image viewer
+                this.boundHandleTipImageClick = this.handleTipImageClick.bind(this); // For event delegation
+                this.boundHandleEscapeKey = this.handleEscapeKey.bind(this); // For Escape key closing image viewer
+
                 this.initializeElements();
                 this.attachEventListeners();
                 this.loadSettings();
@@ -1547,23 +1591,19 @@ You can also right-click and select 'Paste'."></textarea>
                 this.darkModeToggle = document.getElementById('darkMode');
                 this.startQuizBtn = document.getElementById('startQuiz');
                 
-                // JSON format info elements
                 this.jsonFormatInfo = document.getElementById('jsonFormatInfo');
                 this.jsonFormatHeader = document.getElementById('jsonFormatHeader');
                 this.jsonFormatContent = document.getElementById('jsonFormatContent');
                 
-                // Progress notice elements
                 this.progressNotice = document.getElementById('progressNotice');
                 this.progressDetails = document.getElementById('progressDetails');
                 this.continueQuizBtn = document.getElementById('continueQuiz');
                 this.viewResultsBtn = document.getElementById('viewResults');
                 this.clearProgressBtn = document.getElementById('clearProgress');
                 
-                // Tab elements
                 this.tabs = document.querySelectorAll('.tab');
                 this.tabContents = document.querySelectorAll('.tab-content');
                 
-                // Quiz elements
                 this.setupPanel = document.getElementById('setupPanel');
                 this.quizContainer = document.getElementById('quizContainer');
                 this.resultsContainer = document.getElementById('resultsContainer');
@@ -1576,45 +1616,36 @@ You can also right-click and select 'Paste'."></textarea>
                 this.tipText = document.getElementById('tipText');
                 this.answerFeedback = document.getElementById('answerFeedback');
                 
-                // Navigation elements
                 this.prevBtn = document.getElementById('prevBtn');
                 this.submitBtn = document.getElementById('submitBtn');
                 this.nextBtn = document.getElementById('nextBtn');
                 this.finishQuizBtn = document.getElementById('finishQuiz');
                 this.backToSetupBtn = document.getElementById('backToSetup');
                 
-                // Results elements
                 this.finalScore = document.getElementById('finalScore');
                 this.resultDetails = document.getElementById('resultDetails');
                 this.backToSetupFromResultsBtn = document.getElementById('backToSetupFromResults');
+
+                // Image Viewer Elements
+                this.imageViewer = document.getElementById('imageViewer');
+                this.fullScreenImage = document.getElementById('fullScreenImage');
             }
 
             attachEventListeners() {
-                // File input
                 this.fileInput.addEventListener('change', (e) => this.handleFileLoad(e));
-                
-                // Load JSON button
                 this.loadJsonBtn.onclick = () => this.handleJsonPaste();
-                
-                // JSON format info toggle
                 this.jsonFormatHeader.onclick = () => this.toggleJsonFormatInfo();
                 
-                // Progress notice buttons
                 this.continueQuizBtn.onclick = () => this.continueQuizFromProgress();
                 this.viewResultsBtn.onclick = () => this.viewResultsFromProgress();
                 this.clearProgressBtn.onclick = () => this.clearProgress();
                 
-                // Tab switching
                 this.tabs.forEach(tab => {
-                    tab.onclick = () => {
-                        this.switchTab(tab.dataset.tab);
-                    };
+                    tab.onclick = () => this.switchTab(tab.dataset.tab);
                 });
                 
-                // Settings
                 this.darkModeToggle.addEventListener('change', (e) => this.toggleDarkMode(e.target.checked));
                 
-                // Quiz buttons
                 this.startQuizBtn.onclick = () => this.startQuiz();
                 this.prevBtn.onclick = () => this.previousQuestion();
                 this.submitBtn.onclick = () => this.submitAnswer();
@@ -1623,75 +1654,89 @@ You can also right-click and select 'Paste'."></textarea>
                 this.backToSetupBtn.onclick = () => this.backToSetup();
                 this.backToSetupFromResultsBtn.onclick = () => this.backToSetup();
                 
-                // Save settings on change
                 [this.shuffleQuestionsToggle, this.shuffleAnswersToggle, this.darkModeToggle].forEach(toggle => {
                     toggle.addEventListener('change', () => this.saveSettings());
                 });
 
-                // Auto-save progress periodically
                 setInterval(() => {
                     if (this.currentState === 'quiz' || this.currentState === 'results') {
                         this.saveProgress();
                     }
-                }, 5000); // Save every 5 seconds
+                }, 5000);
 
-                // Save progress before page unload
-                window.addEventListener('beforeunload', () => {
-                    this.saveProgress();
-                });
-
-                // Save progress on visibility change (mobile app switching)
+                window.addEventListener('beforeunload', () => this.saveProgress());
                 document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) {
-                        this.saveProgress();
-                    }
+                    if (document.hidden) this.saveProgress();
                 });
+
+                // Image viewer event listener
+                this.imageViewer.addEventListener('click', () => this.closeFullScreenImage());
             }
+
+            // Image Viewer Methods
+            openFullScreenImage(src) {
+                this.fullScreenImage.setAttribute('src', src);
+                this.imageViewer.classList.add('show');
+
+                this.originalBodyOverflow = document.body.style.overflow;
+                document.body.style.overflow = 'hidden';
+                
+                document.addEventListener('keydown', this.boundHandleEscapeKey);
+            }
+
+            closeFullScreenImage() {
+                if (!this.imageViewer.classList.contains('show')) return; // Already closed
+
+                this.imageViewer.classList.remove('show');
+                this.fullScreenImage.setAttribute('src', ''); // Clear src
+
+                document.body.style.overflow = this.originalBodyOverflow;
+                document.removeEventListener('keydown', this.boundHandleEscapeKey);
+            }
+            
+            handleEscapeKey(event) {
+                if (event.key === 'Escape') {
+                    this.closeFullScreenImage();
+                }
+            }
+
+            attachTipImageListeners() {
+                this.tipText.removeEventListener('click', this.boundHandleTipImageClick);
+                this.tipText.addEventListener('click', this.boundHandleTipImageClick);
+            }
+
+            handleTipImageClick(event) {
+                if (event.target.tagName === 'IMG' && event.target.closest('.tip-content')) {
+                    event.preventDefault();
+                    this.openFullScreenImage(event.target.src);
+                }
+            }
+            // End Image Viewer Methods
+
 
             toggleJsonFormatInfo() {
                 const isExpanded = this.jsonFormatInfo.classList.contains('expanded');
-                
-                if (isExpanded) {
-                    this.jsonFormatInfo.classList.remove('expanded');
-                    this.jsonFormatContent.classList.remove('expanded');
-                } else {
-                    this.jsonFormatInfo.classList.add('expanded');
-                    this.jsonFormatContent.classList.add('expanded');
-                }
-                
-                // Save the expanded state
+                this.jsonFormatInfo.classList.toggle('expanded');
+                this.jsonFormatContent.classList.toggle('expanded');
                 localStorage.setItem('jsonFormatExpanded', !isExpanded);
             }
 
             switchTab(tabName) {
-                this.tabs.forEach(tab => {
-                    tab.classList.toggle('active', tab.dataset.tab === tabName);
-                });
-                
-                this.tabContents.forEach(content => {
-                    content.classList.toggle('active', content.id === tabName + 'Tab');
-                });
+                this.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.tab === tabName));
+                this.tabContents.forEach(content => content.classList.toggle('active', content.id === tabName + 'Tab'));
             }
 
             handleFileLoad(event) {
                 const file = event.target.files[0];
-                if (!file) {
-                    return;
-                }
-
+                if (!file) return;
                 const reader = new FileReader();
-                
                 reader.onload = (e) => {
                     try {
                         const jsonText = e.target.result;
                         const parsedData = JSON.parse(jsonText);
-                        
-                        // Store original data and create working copy
-                        this.originalQuizData = JSON.parse(JSON.stringify(parsedData)); // Deep clone
-                        this.quizData = JSON.parse(JSON.stringify(parsedData)); // Deep clone
-                        
+                        this.originalQuizData = JSON.parse(JSON.stringify(parsedData));
+                        this.quizData = JSON.parse(JSON.stringify(parsedData));
                         this.validateQuizData();
-                        
                         this.fileStatus.textContent = `✓ Loaded: ${file.name} (${this.quizData.quiz.questions.length} questions)`;
                         this.fileStatus.style.color = 'var(--success-color)';
                         this.fileStatus.classList.remove('hidden');
@@ -1700,36 +1745,25 @@ You can also right-click and select 'Paste'."></textarea>
                         this.showError('Error loading quiz file: ' + error.message);
                     }
                 };
-                
-                reader.onerror = (e) => {
-                    this.showError('Error reading file');
-                };
-                
+                reader.onerror = () => this.showError('Error reading file');
                 reader.readAsText(file);
             }
 
             handleJsonPaste() {
                 const jsonText = this.jsonTextarea.value.trim();
-                
                 if (!jsonText) {
                     alert('Please paste JSON data first');
                     return;
                 }
-
                 try {
                     const parsedData = JSON.parse(jsonText);
-                    
-                    // Store original data and create working copy
-                    this.originalQuizData = JSON.parse(JSON.stringify(parsedData)); // Deep clone
-                    this.quizData = JSON.parse(JSON.stringify(parsedData)); // Deep clone
-                    
+                    this.originalQuizData = JSON.parse(JSON.stringify(parsedData));
+                    this.quizData = JSON.parse(JSON.stringify(parsedData));
                     this.validateQuizData();
-                    
                     this.fileStatus.textContent = `✓ JSON loaded (${this.quizData.quiz.questions.length} questions)`;
                     this.fileStatus.style.color = 'var(--success-color)';
                     this.fileStatus.classList.remove('hidden');
                     this.startQuizBtn.disabled = false;
-                    
                     alert('JSON loaded successfully!');
                 } catch (error) {
                     this.showError('Error parsing JSON: ' + error.message);
@@ -1748,17 +1782,14 @@ You can also right-click and select 'Paste'."></textarea>
                 if (!this.quizData || !this.quizData.quiz || !this.quizData.quiz.questions) {
                     throw new Error('Invalid quiz format - missing quiz.questions');
                 }
-                
                 const questions = this.quizData.quiz.questions;
                 if (!Array.isArray(questions) || questions.length === 0) {
                     throw new Error('No questions found or questions is not an array');
                 }
-
                 questions.forEach((q, index) => {
                     if (!q.question || !q.options || !Array.isArray(q.options)) {
                         throw new Error(`Invalid question format at index ${index} - missing question or options`);
                     }
-                    
                     if (q.type === 'multiple' && !Array.isArray(q.correct_answers)) {
                         throw new Error(`Multiple choice question at index ${index} missing correct_answers array`);
                     } else if (q.type === 'single' && typeof q.correct_answer !== 'number') {
@@ -1771,13 +1802,11 @@ You can also right-click and select 'Paste'."></textarea>
                 return String.fromCharCode(65 + index);
             }
 
-            // Progress Management
             saveProgress() {
                 if (this.currentState === 'setup') return;
-
                 const progressData = {
                     currentState: this.currentState,
-                    originalQuizData: this.originalQuizData, // Save original data
+                    originalQuizData: this.originalQuizData,
                     questions: this.questions,
                     currentQuestionIndex: this.currentQuestionIndex,
                     userAnswers: this.userAnswers,
@@ -1792,10 +1821,8 @@ You can also right-click and select 'Paste'."></textarea>
                     },
                     timestamp: Date.now()
                 };
-
                 try {
                     localStorage.setItem('quizProgress', JSON.stringify(progressData));
-                    console.log('Progress saved successfully');
                 } catch (error) {
                     console.error('Failed to save progress:', error);
                 }
@@ -1805,16 +1832,12 @@ You can also right-click and select 'Paste'."></textarea>
                 try {
                     const savedProgress = localStorage.getItem('quizProgress');
                     if (!savedProgress) return;
-
                     const progressData = JSON.parse(savedProgress);
-                    
-                    // Check if progress is recent (within 7 days)
                     const daysSinceProgress = (Date.now() - progressData.timestamp) / (1000 * 60 * 60 * 24);
                     if (daysSinceProgress > 7) {
                         this.clearProgress();
                         return;
                     }
-
                     this.showProgressNotice(progressData);
                 } catch (error) {
                     console.error('Failed to load progress:', error);
@@ -1824,10 +1847,9 @@ You can also right-click and select 'Paste'."></textarea>
 
             showProgressNotice(progressData) {
                 const { currentState, questions, currentQuestionIndex, quizResults } = progressData;
-                
                 let detailsText = '';
                 if (currentState === 'quiz') {
-                    const answeredCount = Object.keys(progressData.submittedAnswers).length;
+                    const answeredCount = Object.keys(progressData.submittedAnswers || {}).length;
                     detailsText = `Quiz in progress: Question ${currentQuestionIndex + 1} of ${questions.length} (${answeredCount} answered)`;
                     this.continueQuizBtn.style.display = 'inline-block';
                     this.viewResultsBtn.style.display = 'none';
@@ -1836,7 +1858,6 @@ You can also right-click and select 'Paste'."></textarea>
                     this.continueQuizBtn.style.display = 'none';
                     this.viewResultsBtn.style.display = 'inline-block';
                 }
-
                 this.progressDetails.textContent = detailsText;
                 this.progressNotice.classList.add('show');
             }
@@ -1845,8 +1866,6 @@ You can also right-click and select 'Paste'."></textarea>
                 try {
                     const savedProgress = localStorage.getItem('quizProgress');
                     const progressData = JSON.parse(savedProgress);
-
-                    // Restore quiz state from original data
                     this.originalQuizData = progressData.originalQuizData;
                     this.questions = progressData.questions;
                     this.currentQuestionIndex = progressData.currentQuestionIndex;
@@ -1855,25 +1874,17 @@ You can also right-click and select 'Paste'."></textarea>
                     this.startTime = Date.now() - progressData.elapsedTime;
                     this.optionMappings = progressData.optionMappings || {};
                     this.currentState = 'quiz';
-
-                    // Restore shuffle settings
                     if (progressData.shuffleSettings) {
                         this.shuffleQuestionsToggle.checked = progressData.shuffleSettings.shuffleQuestions;
                         this.shuffleAnswersToggle.checked = progressData.shuffleSettings.shuffleAnswers;
                     }
-
-                    // Show quiz interface
                     this.setupPanel.style.display = 'none';
                     this.quizContainer.style.display = 'block';
                     this.resultsContainer.style.display = 'none';
-
                     this.totalQuestionsSpan.textContent = this.questions.length;
                     this.startTimer();
                     this.displayQuestion();
-
-                    console.log('Quiz resumed from progress');
                 } catch (error) {
-                    console.error('Failed to continue quiz:', error);
                     alert('Failed to load saved progress. Starting fresh.');
                     this.clearProgress();
                 }
@@ -1883,26 +1894,17 @@ You can also right-click and select 'Paste'."></textarea>
                 try {
                     const savedProgress = localStorage.getItem('quizProgress');
                     const progressData = JSON.parse(savedProgress);
-
-                    // Restore results state
                     this.quizResults = progressData.quizResults;
                     this.currentState = 'results';
-
-                    // Show results interface
                     this.setupPanel.style.display = 'none';
                     this.quizContainer.style.display = 'none';
                     this.resultsContainer.style.display = 'block';
-
-                    // Display results
                     this.finalScore.textContent = `${this.quizResults.score}%`;
                     this.resultDetails.innerHTML = `
                         <p>You answered <strong>${this.quizResults.correctCount}</strong> out of <strong>${this.quizResults.totalCount}</strong> questions correctly.</p>
                         <p>Time taken: ${this.quizResults.timeElapsed}</p>
                     `;
-
-                    console.log('Results viewed from progress');
                 } catch (error) {
-                    console.error('Failed to view results:', error);
                     alert('Failed to load saved results.');
                     this.clearProgress();
                 }
@@ -1911,7 +1913,6 @@ You can also right-click and select 'Paste'."></textarea>
             clearProgress() {
                 localStorage.removeItem('quizProgress');
                 this.progressNotice.classList.remove('show');
-                console.log('Progress cleared');
             }
 
             startQuiz() {
@@ -1919,43 +1920,21 @@ You can also right-click and select 'Paste'."></textarea>
                     alert('Please load a quiz file first');
                     return;
                 }
-
-                // Clear any existing progress when starting fresh
                 this.clearProgress();
-
-                // Always start from original, unmodified data
-                this.quizData = JSON.parse(JSON.stringify(this.originalQuizData)); // Deep clone
+                this.quizData = JSON.parse(JSON.stringify(this.originalQuizData));
                 this.questions = [...this.quizData.quiz.questions];
-                this.optionMappings = {}; // Reset mappings
-                
-                // Add original indices to questions BEFORE shuffling
-                this.questions.forEach((question, index) => {
-                    question.originalIndex = index;
-                });
-                
-                if (this.shuffleQuestionsToggle.checked) {
-                    this.shuffleArray(this.questions);
-                }
-                
+                this.optionMappings = {};
+                this.questions.forEach((question, index) => question.originalIndex = index);
+                if (this.shuffleQuestionsToggle.checked) this.shuffleArray(this.questions);
                 if (this.shuffleAnswersToggle.checked) {
                     this.questions.forEach((question, questionIndex) => {
                         const originalOptions = [...question.options];
                         const shuffledIndices = [...Array(originalOptions.length).keys()];
                         this.shuffleArray(shuffledIndices);
-                        
-                        // Create mapping: original index -> new position
                         const optionMapping = {};
-                        shuffledIndices.forEach((originalIndex, newPosition) => {
-                            optionMapping[originalIndex] = newPosition;
-                        });
-                        
-                        // Store the mapping for this question using its current position in the shuffled array
+                        shuffledIndices.forEach((originalIdx, newPos) => optionMapping[originalIdx] = newPos);
                         this.optionMappings[questionIndex] = optionMapping;
-                        
-                        // Apply the shuffle to options
                         question.options = shuffledIndices.map(i => originalOptions[i]);
-                        
-                        // Update correct answers to match new positions
                         if (question.type === 'single') {
                             question.correct_answer = optionMapping[question.correct_answer];
                         } else if (question.type === 'multiple') {
@@ -1963,21 +1942,17 @@ You can also right-click and select 'Paste'."></textarea>
                         }
                     });
                 } else {
-                    // If shuffling is disabled, ensure no mappings exist
                     this.optionMappings = {};
                 }
-                
                 this.currentQuestionIndex = 0;
                 this.userAnswers = {};
                 this.submittedAnswers = {};
                 this.startTime = Date.now();
                 this.currentState = 'quiz';
                 this.quizResults = null;
-                
                 this.setupPanel.style.display = 'none';
                 this.quizContainer.style.display = 'block';
                 this.resultsContainer.style.display = 'none';
-                
                 this.totalQuestionsSpan.textContent = this.questions.length;
                 this.startTimer();
                 this.displayQuestion();
@@ -1985,10 +1960,7 @@ You can also right-click and select 'Paste'."></textarea>
             }
 
             startTimer() {
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                }
-                
+                if (this.timerInterval) clearInterval(this.timerInterval);
                 this.timerInterval = setInterval(() => {
                     const elapsed = Date.now() - this.startTime;
                     const minutes = Math.floor(elapsed / 60000);
@@ -2001,7 +1973,6 @@ You can also right-click and select 'Paste'."></textarea>
                 const question = this.questions[this.currentQuestionIndex];
                 this.currentQuestionSpan.textContent = this.currentQuestionIndex + 1;
                 this.questionText.textContent = question.question;
-                
                 this.optionsContainer.innerHTML = '';
                 this.answerFeedback.classList.remove('show', 'correct', 'incorrect');
                 this.tipContainer.classList.remove('show');
@@ -2009,121 +1980,78 @@ You can also right-click and select 'Paste'."></textarea>
                 question.options.forEach((option, index) => {
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'option';
-                    
                     const inputType = question.type === 'multiple' ? 'checkbox' : 'radio';
                     const inputName = question.type === 'multiple' ? `question_${this.currentQuestionIndex}_${index}` : `question_${this.currentQuestionIndex}`;
                     const optionLetter = this.getOptionLetter(index);
-                    
                     optionDiv.innerHTML = `
                         <span class="option-letter">${optionLetter}.</span>
                         <input type="${inputType}" name="${inputName}" value="${index}" id="option_${index}">
                         <span class="option-text">${option}</span>
                         <span class="option-status"></span>
                     `;
-                    
                     if (!this.submittedAnswers[this.currentQuestionIndex]) {
                         const input = optionDiv.querySelector('input');
                         const optionText = optionDiv.querySelector('.option-text');
-                        const optionLetter = optionDiv.querySelector('.option-letter');
-                        
-                        input.addEventListener('change', (e) => {
+                        const optionLetterSpan = optionDiv.querySelector('.option-letter');
+                        input.addEventListener('change', () => {
                             if (question.type === 'single') {
-                                document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => {
-                                    inp.closest('.option').classList.remove('selected');
-                                });
+                                document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => inp.closest('.option').classList.remove('selected'));
                             }
-                            this.updateOptionSelection();
-                            this.saveCurrentAnswer();
-                            this.saveProgress();
+                            this.updateOptionSelection(); this.saveCurrentAnswer(); this.saveProgress();
                         });
-
-                        [optionText, optionLetter].forEach(element => {
-                            element.addEventListener('click', (e) => {
-                                e.preventDefault();
-                                if (question.type === 'single') {
-                                    document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => {
-                                        inp.checked = false;
-                                        inp.closest('.option').classList.remove('selected');
-                                    });
-                                    input.checked = true;
-                                } else {
-                                    input.checked = !input.checked;
-                                }
-                                this.updateOptionSelection();
-                                this.saveCurrentAnswer();
-                                this.saveProgress();
-                            });
-                        });
-
+                        [optionText, optionLetterSpan].forEach(el => el.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            if (question.type === 'single') {
+                                document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => { inp.checked = false; inp.closest('.option').classList.remove('selected'); });
+                                input.checked = true;
+                            } else { input.checked = !input.checked; }
+                            this.updateOptionSelection(); this.saveCurrentAnswer(); this.saveProgress();
+                        }));
                         optionDiv.addEventListener('click', (e) => {
                             if (e.target === optionDiv) {
                                 if (question.type === 'single') {
-                                    document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => {
-                                        inp.checked = false;
-                                        inp.closest('.option').classList.remove('selected');
-                                    });
+                                    document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => { inp.checked = false; inp.closest('.option').classList.remove('selected'); });
                                     input.checked = true;
-                                } else {
-                                    input.checked = !input.checked;
-                                }
-                                this.updateOptionSelection();
-                                this.saveCurrentAnswer();
-                                this.saveProgress();
+                                } else { input.checked = !input.checked; }
+                                this.updateOptionSelection(); this.saveCurrentAnswer(); this.saveProgress();
                             }
                         });
                     } else {
                         optionDiv.classList.add('disabled');
                     }
-                    
                     this.optionsContainer.appendChild(optionDiv);
                 });
-                
                 this.restoreAnswers();
-                
                 this.prevBtn.disabled = this.currentQuestionIndex === 0;
-                
                 const isSubmitted = this.submittedAnswers[this.currentQuestionIndex];
                 this.submitBtn.disabled = isSubmitted;
                 this.submitBtn.textContent = isSubmitted ? 'Submitted' : 'Submit Answer';
-                
                 this.nextBtn.disabled = this.currentQuestionIndex === this.questions.length - 1;
-                
                 if (isSubmitted) {
                     this.showAnswerFeedback();
-                    if (this.getCurrentOriginalQuestion().tip) {
-                        this.showTip();
-                    }
+                    if (this.getCurrentOriginalQuestion().tip) this.showTip();
                 }
             }
 
-            // Helper method to get the original question for the current question
             getCurrentOriginalQuestion() {
                 const currentQuestion = this.questions[this.currentQuestionIndex];
-                const originalIndex = currentQuestion.originalIndex;
-                return this.originalQuizData.quiz.questions[originalIndex];
+                return this.originalQuizData.quiz.questions[currentQuestion.originalIndex];
             }
 
             updateOptionSelection() {
                 document.querySelectorAll('.option').forEach(option => {
                     const input = option.querySelector('input');
-                    if (input.checked) {
-                        option.classList.add('selected');
-                    } else {
-                        option.classList.remove('selected');
-                    }
+                    option.classList.toggle('selected', input.checked);
                 });
             }
 
             saveCurrentAnswer() {
                 const question = this.questions[this.currentQuestionIndex];
                 const selectedInputs = document.querySelectorAll('.option input:checked');
-                
                 if (question.type === 'single') {
-                    this.userAnswers[this.currentQuestionIndex] = selectedInputs.length > 0 ? 
-                        parseInt(selectedInputs[0].value) : null;
+                    this.userAnswers[this.currentQuestionIndex] = selectedInputs.length > 0 ? parseInt(selectedInputs[0].value) : null;
                 } else {
-                    this.userAnswers[this.currentQuestionIndex] = Array.from(selectedInputs)
-                        .map(input => parseInt(input.value));
+                    this.userAnswers[this.currentQuestionIndex] = Array.from(selectedInputs).map(input => parseInt(input.value));
                 }
             }
 
@@ -2133,17 +2061,11 @@ You can also right-click and select 'Paste'."></textarea>
                     if (Array.isArray(savedAnswer)) {
                         savedAnswer.forEach(value => {
                             const input = document.querySelector(`input[value="${value}"]`);
-                            if (input) {
-                                input.checked = true;
-                                input.closest('.option').classList.add('selected');
-                            }
+                            if (input) { input.checked = true; input.closest('.option').classList.add('selected'); }
                         });
                     } else if (savedAnswer !== null) {
                         const input = document.querySelector(`input[value="${savedAnswer}"]`);
-                        if (input) {
-                            input.checked = true;
-                            input.closest('.option').classList.add('selected');
-                        }
+                        if (input) { input.checked = true; input.closest('.option').classList.add('selected'); }
                     }
                 }
             }
@@ -2151,29 +2073,20 @@ You can also right-click and select 'Paste'."></textarea>
             submitAnswer() {
                 this.saveCurrentAnswer();
                 const userAnswer = this.userAnswers[this.currentQuestionIndex];
-                
-                if (userAnswer === null || userAnswer === undefined || 
-                    (Array.isArray(userAnswer) && userAnswer.length === 0)) {
+                if (userAnswer === null || userAnswer === undefined || (Array.isArray(userAnswer) && userAnswer.length === 0)) {
                     alert('Please select an answer before submitting.');
                     return;
                 }
-                
                 this.submittedAnswers[this.currentQuestionIndex] = true;
                 this.showAnswerFeedback();
-                
                 const originalQuestion = this.getCurrentOriginalQuestion();
-                if (originalQuestion.tip) {
-                    this.showTip();
-                }
-                
+                if (originalQuestion.tip) this.showTip();
                 this.submitBtn.disabled = true;
                 this.submitBtn.textContent = 'Submitted';
-                
                 document.querySelectorAll('.option').forEach(option => {
                     option.classList.add('disabled');
-                    option.style.cursor = 'not-allowed';
+                    option.style.cursor = 'not-allowed'; // Redundant due to .disabled, but for clarity
                 });
-
                 this.saveProgress();
             }
 
@@ -2181,69 +2094,38 @@ You can also right-click and select 'Paste'."></textarea>
                 const question = this.questions[this.currentQuestionIndex];
                 const userAnswer = this.userAnswers[this.currentQuestionIndex];
                 let isCorrect = false;
-                
                 if (question.type === 'single') {
                     isCorrect = userAnswer === question.correct_answer;
                 } else if (question.type === 'multiple') {
                     const correctAnswers = question.correct_answers || [];
                     const userAnswers = userAnswer || [];
-                    
-                    isCorrect = correctAnswers.length === userAnswers.length &&
-                               correctAnswers.every(ans => userAnswers.includes(ans));
+                    isCorrect = correctAnswers.length === userAnswers.length && correctAnswers.every(ans => userAnswers.includes(ans));
                 }
-                
                 document.querySelectorAll('.option').forEach((option, index) => {
                     const statusSpan = option.querySelector('.option-status');
-                    
                     if (question.type === 'single') {
-                        if (index === question.correct_answer) {
-                            option.classList.add('correct');
-                            statusSpan.textContent = '✓';
-                        }
-                        if (index === userAnswer && index !== question.correct_answer) {
-                            option.classList.add('incorrect');
-                            statusSpan.textContent = '✗';
-                        }
+                        if (index === question.correct_answer) { option.classList.add('correct'); statusSpan.textContent = '✓'; }
+                        if (index === userAnswer && index !== question.correct_answer) { option.classList.add('incorrect'); statusSpan.textContent = '✗'; }
                     } else {
                         const correctAnswers = question.correct_answers || [];
                         const userAnswers = userAnswer || [];
-                        
-                        if (correctAnswers.includes(index)) {
-                            option.classList.add('correct');
-                            statusSpan.textContent = '✓';
-                        }
-                        if (userAnswers.includes(index) && !correctAnswers.includes(index)) {
-                            option.classList.add('incorrect');
-                            statusSpan.textContent = '✗';
-                        }
+                        if (correctAnswers.includes(index)) { option.classList.add('correct'); statusSpan.textContent = '✓'; }
+                        if (userAnswers.includes(index) && !correctAnswers.includes(index)) { option.classList.add('incorrect'); statusSpan.textContent = '✗'; }
                     }
                 });
-                
                 this.answerFeedback.className = `answer-feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
-                this.answerFeedback.textContent = isCorrect ? 
-                    '✓ Correct! Well done.' : 
-                    '✗ Incorrect. Check the correct answer(s) highlighted above.';
+                this.answerFeedback.textContent = isCorrect ? '✓ Correct! Well done.' : '✗ Incorrect. Check the correct answer(s) highlighted above.';
             }
 
             processOptionReferences(tipText, originalQuestion, questionIndex) {
                 if (!tipText) return tipText;
-                
-                // Get the mapping for this question (if shuffling was enabled)
                 const optionMapping = this.optionMappings[questionIndex] || {};
-                
-                // Replace [[opt1]], [[opt2]], etc. with highlighted letters
                 return tipText.replace(/\[\[opt(\d+)\]\]/g, (match, optionNumber) => {
-                    const originalIndex = parseInt(optionNumber) - 1; // Convert to 0-based index
-                    
-                    // Determine the current position of this option
+                    const originalIndex = parseInt(optionNumber) - 1;
                     let currentPosition = originalIndex;
-                    
-                    // If shuffling was enabled and we have mappings, use them
                     if (Object.keys(optionMapping).length > 0 && optionMapping.hasOwnProperty(originalIndex)) {
                         currentPosition = optionMapping[originalIndex];
                     }
-                    
-                    // Convert position to letter (A, B, C, etc.)
                     const letter = this.getOptionLetter(currentPosition);
                     return `<span class="tip-option-highlight">${letter}</span>`;
                 });
@@ -2252,15 +2134,10 @@ You can also right-click and select 'Paste'."></textarea>
             showTip() {
                 const originalQuestion = this.getCurrentOriginalQuestion();
                 if (originalQuestion && originalQuestion.tip) {
-                    const processedTip = this.processOptionReferences(
-                        originalQuestion.tip, 
-                        originalQuestion, 
-                        this.currentQuestionIndex
-                    );
-                    
-                    // Set the HTML content with full HTML support
+                    const processedTip = this.processOptionReferences(originalQuestion.tip, originalQuestion, this.currentQuestionIndex);
                     this.tipText.innerHTML = processedTip;
                     this.tipContainer.classList.add('show');
+                    this.attachTipImageListeners(); // Attach listeners after tip content is set
                 }
             }
 
@@ -2289,41 +2166,27 @@ You can also right-click and select 'Paste'."></textarea>
             }
 
             calculateResults() {
-                let correctAnswers = 0;
-                let totalQuestions = this.questions.length;
-                
+                let correctAnswersCount = 0;
                 this.questions.forEach((question, index) => {
                     const userAnswer = this.userAnswers[index];
                     let isCorrect = false;
-                    
                     if (question.type === 'single') {
                         isCorrect = userAnswer === question.correct_answer;
                     } else if (question.type === 'multiple') {
                         const correctAnswers = question.correct_answers || [];
                         const userAnswers = userAnswer || [];
-                        
-                        isCorrect = correctAnswers.length === userAnswers.length &&
-                                   correctAnswers.every(ans => userAnswers.includes(ans));
+                        isCorrect = correctAnswers.length === userAnswers.length && correctAnswers.every(ans => userAnswers.includes(ans));
                     }
-                    
-                    if (isCorrect) correctAnswers++;
+                    if (isCorrect) correctAnswersCount++;
                 });
-                
-                const score = Math.round((correctAnswers / totalQuestions) * 100);
+                const score = Math.round((correctAnswersCount / this.questions.length) * 100);
                 const timeElapsed = this.timerSpan.textContent;
-                
-                this.quizResults = {
-                    score: score,
-                    correctCount: correctAnswers,
-                    totalCount: totalQuestions,
-                    timeElapsed: timeElapsed
-                };
+                this.quizResults = { score, correctCount: correctAnswersCount, totalCount: this.questions.length, timeElapsed };
             }
 
             showResults() {
                 this.quizContainer.style.display = 'none';
                 this.resultsContainer.style.display = 'block';
-                
                 this.finalScore.textContent = `${this.quizResults.score}%`;
                 this.resultDetails.innerHTML = `
                     <p>You answered <strong>${this.quizResults.correctCount}</strong> out of <strong>${this.quizResults.totalCount}</strong> questions correctly.</p>
@@ -2333,23 +2196,20 @@ You can also right-click and select 'Paste'."></textarea>
 
             backToSetup() {
                 clearInterval(this.timerInterval);
-                this.clearProgress();
+                this.clearProgress(); // Clear progress when going back to setup
                 this.currentState = 'setup';
                 this.quizContainer.style.display = 'none';
                 this.resultsContainer.style.display = 'none';
                 this.setupPanel.style.display = 'block';
-                
-                // Reset file input and status when going back to setup
-                this.fileInput.value = '';
-                this.jsonTextarea.value = '';
+                this.fileInput.value = ''; // Reset file input
+                this.jsonTextarea.value = ''; // Reset textarea
+                this.fileStatus.classList.add('hidden'); // Hide file status
+                this.startQuizBtn.disabled = true; // Disable start button
             }
 
             toggleDarkMode(enabled) {
-                if (enabled) {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                } else {
-                    document.documentElement.removeAttribute('data-theme');
-                }
+                document.documentElement.setAttribute('data-theme', enabled ? 'dark' : '');
+                if (!enabled) document.documentElement.removeAttribute('data-theme');
             }
 
             shuffleArray(array) {
@@ -2377,8 +2237,6 @@ You can also right-click and select 'Paste'."></textarea>
                     this.darkModeToggle.checked = settings.darkMode || false;
                     this.toggleDarkMode(settings.darkMode);
                 }
-
-                // Load expanded state
                 const expanded = localStorage.getItem('jsonFormatExpanded');
                 if (expanded === 'true') {
                     this.jsonFormatInfo.classList.add('expanded');
