@@ -558,7 +558,7 @@
             background: rgba(0, 123, 255, 0.05);
         }
 
-        .option:active:not(:disabled) {
+        .option:active:not(.disabled) {
             transform: scale(0.98);
         }
 
@@ -665,7 +665,7 @@
             cursor: not-allowed;
         }
 
-        .option.disabled input {
+        .option.disabled input { /* Ensure disabled inputs are also styled not-allowed */
             cursor: not-allowed;
         }
 
@@ -1106,9 +1106,9 @@
 
         #fullScreenImage {
             display: block;
-            width: 100%;  /* FIX: Let image attempt to fill container width */
-            height: 100%; /* FIX: Let image attempt to fill container height */
-            object-fit: contain; /* This will scale it down to fit, maintaining aspect ratio */
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             cursor: default;
             user-select: none;
         }
@@ -1314,11 +1314,11 @@
         "tip": "[[opt3]] is correct because Paris is the capital and largest city of France, known as the &lt;strong&gt;City of Light&lt;/strong&gt;. [[opt1]] is the capital of the UK, [[opt2]] is the capital of Germany, and [[opt4]] is the capital of Spain."
       },
       {
-        "question": "Which programming languages are primarily used for web development?",
-        "options": ["JavaScript", "C++", "Python", "Java"],
+        "question": "Which two programming languages are primarily used for web development?",
+        "options": ["JavaScript", "C++", "Python", "Java", "Ruby"],
         "type": "multiple",
         "correct_answers": [0, 2],
-        "tip": "&lt;h4&gt;Web Development Languages&lt;/h4&gt;&lt;p&gt;[[opt1]] and [[opt3]] are correct:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;[[opt1]]&lt;/strong&gt; - Essential for front-end web development and also used on the server-side with Node.js&lt;/li&gt;&lt;li&gt;&lt;strong&gt;[[opt3]]&lt;/strong&gt; - Widely used for web development with frameworks like Django and Flask&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The other options:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;[[opt2]] is mainly used for system programming&lt;/li&gt;&lt;li&gt;[[opt4]] is primarily used for enterprise applications&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Here is a relevant image:&lt;/p&gt;&lt;img src='https://via.placeholder.com/800x400.png?text=Wide+Image' alt='Wide Image' style='max-width: 200px;'&gt;&lt;p&gt;And a tall one:&lt;/p&gt;&lt;img src='https://via.placeholder.com/400x800.png?text=Tall+Image' alt='Tall Image' style='max-width: 150px;'&gt;&lt;div class='alert alert-info'&gt;💡 Learn more at &lt;a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every/very_long_url_example_that_should_wrap_properly_within_the_tip_container_boundaries_to_avoid_any_horizontal_scrolling_issues_on_smaller_screens_or_when_the_text_is_excessively_long'&gt;MDN Web Docs (long link example)&lt;/a&gt;&lt;/div&gt;"
+        "tip": "&lt;h4&gt;Web Development Languages&lt;/h4&gt;&lt;p&gt;[[opt1]] and [[opt3]] are correct. You must select exactly two options.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;[[opt1]]&lt;/strong&gt; - Essential for front-end web development and also used on the server-side with Node.js&lt;/li&gt;&lt;li&gt;&lt;strong&gt;[[opt3]]&lt;/strong&gt; - Widely used for web development with frameworks like Django and Flask&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The other options:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;[[opt2]] is mainly used for system programming&lt;/li&gt;&lt;li&gt;[[opt4]] is primarily used for enterprise applications&lt;/li&gt;&lt;li&gt;[[opt5]] is also used for web dev but not primary in this context&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Here is a relevant image:&lt;/p&gt;&lt;img src='https://via.placeholder.com/800x400.png?text=Wide+Image' alt='Wide Image' style='max-width: 200px;'&gt;&lt;p&gt;And a tall one:&lt;/p&gt;&lt;img src='https://via.placeholder.com/400x800.png?text=Tall+Image' alt='Tall Image' style='max-width: 150px;'&gt;&lt;div class='alert alert-info'&gt;💡 Learn more at &lt;a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every/very_long_url_example_that_should_wrap_properly_within_the_tip_container_boundaries_to_avoid_any_horizontal_scrolling_issues_on_smaller_screens_or_when_the_text_is_excessively_long'&gt;MDN Web Docs (long link example)&lt;/a&gt;&lt;/div&gt;"
       }
     ]
   }
@@ -1331,7 +1331,7 @@
                             <li><span class="field-name">options</span> <span class="field-required">(required)</span>: Array of answer choices</li>
                             <li><span class="field-name">type</span> <span class="field-required">(required)</span>: Either <code>"single"</code> (one correct answer) or <code>"multiple"</code> (multiple correct answers)</li>
                             <li><span class="field-name">correct_answer</span> <span class="field-required">(for single)</span>: Index number of the correct option (0-based)</li>
-                            <li><span class="field-name">correct_answers</span> <span class="field-required">(for multiple)</span>: Array of index numbers for correct options (0-based)</li>
+                            <li><span class="field-name">correct_answers</span> <span class="field-required">(for multiple)</span>: Array of index numbers for correct options (0-based). The user will be required to select this exact number of options.</li>
                             <li><span class="field-name">tip</span> <span class="field-optional">(optional)</span>: Additional explanation shown after answering with dynamic option references and <strong>full HTML support</strong></li>
                         </ul>
                     </div>
@@ -1380,7 +1380,7 @@
                         <ul>
                             <li>Array indices start from 0 (first option = 0, second = 1, etc.)</li>
                             <li>For single-choice questions, use <code>correct_answer</code> with a number</li>
-                            <li>For multiple-choice questions, use <code>correct_answers</code> with an array of numbers</li>
+                            <li>For multiple-choice questions, use <code>correct_answers</code> with an array of numbers. The user must select the exact number of options specified by the length of this array.</li>
                             <li>In tips, use <code>[[opt1]]</code>, <code>[[opt2]]</code>, etc. to reference options dynamically</li>
                             <li><code>[[opt1]]</code> refers to the 1st option in the array, <code>[[opt2]]</code> to the 2nd, and so on</li>
                             <li>Option references automatically adapt to shuffled order</li>
@@ -1795,8 +1795,8 @@ You can also right-click and select 'Paste'."></textarea>
                     if (!q.question || !q.options || !Array.isArray(q.options)) {
                         throw new Error(`Invalid question format at index ${index} - missing question or options`);
                     }
-                    if (q.type === 'multiple' && !Array.isArray(q.correct_answers)) {
-                        throw new Error(`Multiple choice question at index ${index} missing correct_answers array`);
+                    if (q.type === 'multiple' && (!Array.isArray(q.correct_answers) || q.correct_answers.length === 0)) { // Also ensure correct_answers is not empty
+                        throw new Error(`Multiple choice question at index ${index} missing or empty correct_answers array`);
                     } else if (q.type === 'single' && typeof q.correct_answer !== 'number') {
                         throw new Error(`Single choice question at index ${index} missing correct_answer number`);
                     }
@@ -1978,63 +1978,105 @@ You can also right-click and select 'Paste'."></textarea>
                 const question = this.questions[this.currentQuestionIndex];
                 this.currentQuestionSpan.textContent = this.currentQuestionIndex + 1;
                 this.questionText.textContent = question.question;
+                
                 this.optionsContainer.innerHTML = '';
                 this.answerFeedback.classList.remove('show', 'correct', 'incorrect');
                 this.tipContainer.classList.remove('show');
+
+                const isQuestionSubmitted = this.submittedAnswers[this.currentQuestionIndex];
                 
                 question.options.forEach((option, index) => {
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'option';
+                    
                     const inputType = question.type === 'multiple' ? 'checkbox' : 'radio';
                     const inputName = question.type === 'multiple' ? `question_${this.currentQuestionIndex}_${index}` : `question_${this.currentQuestionIndex}`;
                     const optionLetter = this.getOptionLetter(index);
+                    
                     optionDiv.innerHTML = `
                         <span class="option-letter">${optionLetter}.</span>
                         <input type="${inputType}" name="${inputName}" value="${index}" id="option_${index}">
                         <span class="option-text">${option}</span>
                         <span class="option-status"></span>
                     `;
-                    if (!this.submittedAnswers[this.currentQuestionIndex]) {
-                        const input = optionDiv.querySelector('input');
+                    
+                    const input = optionDiv.querySelector('input');
+
+                    if (isQuestionSubmitted) {
+                        optionDiv.classList.add('disabled');
+                        if (input) input.disabled = true;
+                    } else {
                         const optionText = optionDiv.querySelector('.option-text');
                         const optionLetterSpan = optionDiv.querySelector('.option-letter');
-                        input.addEventListener('change', () => {
+                        
+                        input.addEventListener('change', (e) => {
                             if (question.type === 'single') {
-                                document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => inp.closest('.option').classList.remove('selected'));
+                                document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => {
+                                    inp.closest('.option').classList.remove('selected');
+                                });
                             }
-                            this.updateOptionSelection(); this.saveCurrentAnswer(); this.saveProgress();
+                            this.updateOptionSelection();
+                            this.saveCurrentAnswer();
+                            this.saveProgress();
                         });
-                        [optionText, optionLetterSpan].forEach(el => el.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            if (question.type === 'single') {
-                                document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => { inp.checked = false; inp.closest('.option').classList.remove('selected'); });
-                                input.checked = true;
-                            } else { input.checked = !input.checked; }
-                            this.updateOptionSelection(); this.saveCurrentAnswer(); this.saveProgress();
-                        }));
+
+                        [optionText, optionLetterSpan].forEach(element => {
+                            element.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                if (input.disabled) return;
+
+                                if (question.type === 'single') {
+                                    document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => {
+                                        inp.checked = false;
+                                        inp.closest('.option').classList.remove('selected');
+                                    });
+                                    input.checked = true;
+                                } else {
+                                    input.checked = !input.checked;
+                                }
+                                this.updateOptionSelection();
+                                this.saveCurrentAnswer();
+                                this.saveProgress();
+                            });
+                        });
+
                         optionDiv.addEventListener('click', (e) => {
                             if (e.target === optionDiv) {
+                                if (input.disabled) return;
+
                                 if (question.type === 'single') {
-                                    document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => { inp.checked = false; inp.closest('.option').classList.remove('selected'); });
+                                    document.querySelectorAll(`input[name="${inputName}"]`).forEach(inp => {
+                                        inp.checked = false;
+                                        inp.closest('.option').classList.remove('selected');
+                                    });
                                     input.checked = true;
-                                } else { input.checked = !input.checked; }
-                                this.updateOptionSelection(); this.saveCurrentAnswer(); this.saveProgress();
+                                } else {
+                                    input.checked = !input.checked;
+                                }
+                                this.updateOptionSelection();
+                                this.saveCurrentAnswer();
+                                this.saveProgress();
                             }
                         });
-                    } else {
-                        optionDiv.classList.add('disabled');
                     }
+                    
                     this.optionsContainer.appendChild(optionDiv);
                 });
+                
                 this.restoreAnswers();
+                
                 this.prevBtn.disabled = this.currentQuestionIndex === 0;
-                const isSubmitted = this.submittedAnswers[this.currentQuestionIndex];
-                this.submitBtn.disabled = isSubmitted;
-                this.submitBtn.textContent = isSubmitted ? 'Submitted' : 'Submit Answer';
+                
+                this.submitBtn.disabled = isQuestionSubmitted;
+                this.submitBtn.textContent = isQuestionSubmitted ? 'Submitted' : 'Submit Answer';
+                
                 this.nextBtn.disabled = this.currentQuestionIndex === this.questions.length - 1;
-                if (isSubmitted) {
+                
+                if (isQuestionSubmitted) {
                     this.showAnswerFeedback();
-                    if (this.getCurrentOriginalQuestion().tip) this.showTip();
+                    if (this.getCurrentOriginalQuestion().tip) {
+                        this.showTip();
+                    }
                 }
             }
 
@@ -2065,11 +2107,11 @@ You can also right-click and select 'Paste'."></textarea>
                 if (savedAnswer !== undefined) {
                     if (Array.isArray(savedAnswer)) {
                         savedAnswer.forEach(value => {
-                            const input = document.querySelector(`input[value="${value}"]`);
+                            const input = document.querySelector(`#optionsContainer input[value="${value}"]`); // More specific selector
                             if (input) { input.checked = true; input.closest('.option').classList.add('selected'); }
                         });
                     } else if (savedAnswer !== null) {
-                        const input = document.querySelector(`input[value="${savedAnswer}"]`);
+                        const input = document.querySelector(`#optionsContainer input[value="${savedAnswer}"]`); // More specific selector
                         if (input) { input.checked = true; input.closest('.option').classList.add('selected'); }
                     }
                 }
@@ -2077,20 +2119,43 @@ You can also right-click and select 'Paste'."></textarea>
 
             submitAnswer() {
                 this.saveCurrentAnswer();
+                const question = this.questions[this.currentQuestionIndex];
                 const userAnswer = this.userAnswers[this.currentQuestionIndex];
-                if (userAnswer === null || userAnswer === undefined || (Array.isArray(userAnswer) && userAnswer.length === 0)) {
+                
+                if (userAnswer === null || userAnswer === undefined || 
+                    (Array.isArray(userAnswer) && userAnswer.length === 0)) {
                     alert('Please select an answer before submitting.');
                     return;
                 }
+
+                if (question.type === 'multiple') {
+                    const numCorrectAnswers = question.correct_answers.length;
+                    const numUserSelections = Array.isArray(userAnswer) ? userAnswer.length : 0;
+                    if (numUserSelections !== numCorrectAnswers) {
+                        alert(`Please select exactly ${numCorrectAnswers} option(s) for this question.`);
+                        return; 
+                    }
+                }
+                
                 this.submittedAnswers[this.currentQuestionIndex] = true;
                 this.showAnswerFeedback();
+                
                 const originalQuestion = this.getCurrentOriginalQuestion();
-                if (originalQuestion.tip) this.showTip();
+                if (originalQuestion.tip) {
+                    this.showTip();
+                }
+                
                 this.submitBtn.disabled = true;
                 this.submitBtn.textContent = 'Submitted';
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.add('disabled');
+                
+                document.querySelectorAll('.option').forEach(optionDiv => {
+                    optionDiv.classList.add('disabled');
+                    const input = optionDiv.querySelector('input');
+                    if (input) {
+                        input.disabled = true;
+                    }
                 });
+
                 this.saveProgress();
             }
 
