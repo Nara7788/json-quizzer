@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Quiz Application</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         :root {
             --bg-color: #ffffff;
@@ -53,13 +54,23 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
             -webkit-text-size-adjust: 100%;
+        }
+
+        body.no-scroll {
+            overflow: hidden;
         }
 
         .container {
@@ -161,7 +172,7 @@
         }
 
         .json-format-content.expanded {
-            max-height: 3000px; /* Increased to accommodate more content */
+            max-height: 3000px; 
         }
 
         .json-format-info.expanded .toggle-icon {
@@ -547,7 +558,7 @@
             background: rgba(0, 123, 255, 0.05);
         }
 
-        .option:active:not(.disabled) {
+        .option:active:not(:disabled) {
             transform: scale(0.98);
         }
 
@@ -724,7 +735,6 @@
             color: var(--text-color);
         }
 
-        /* Enhanced styling for HTML content in tips - Dark/Light mode compatible */
         .tip-content h1, .tip-content h2, .tip-content h3, 
         .tip-content h4, .tip-content h5, .tip-content h6 {
             color: var(--warning-color);
@@ -759,6 +769,8 @@
             color: var(--primary-color);
             text-decoration: underline;
             transition: color 0.2s ease;
+            overflow-wrap: break-word;
+            word-break: break-word; 
         }
 
         .tip-content a:hover {
@@ -776,7 +788,7 @@
             margin: 8px 0;
             display: block;
             border: 1px solid var(--border-color);
-            cursor: zoom-in; /* Indicate image is clickable for full screen */
+            cursor: zoom-in;
         }
 
         .tip-content blockquote {
@@ -813,7 +825,7 @@
             background: none;
             border: none;
             padding: 0;
-            color: var(--text-color); /* Changed from var(--code-text) to var(--text-color) for pre blocks */
+            color: var(--text-color); 
         }
 
         .tip-content table {
@@ -991,7 +1003,7 @@
             padding: 15px;
             border: 1px solid var(--border-color);
             border-radius: 5px;
-            font-family: 'Courier New', monospace;
+            font-family: 'Courier New', Monaco, monospace;
             font-size: 14px;
             background: var(--card-bg);
             color: var(--text-color);
@@ -1075,15 +1087,17 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background-color: rgba(0, 0, 0, 0.85);
-            display: none; /* Initially hidden, shown with .show */
+            display: none; 
             justify-content: center;
             align-items: center;
             z-index: 10000;
             cursor: zoom-out;
             -webkit-tap-highlight-color: transparent;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         .image-viewer.show {
@@ -1091,9 +1105,10 @@
         }
 
         #fullScreenImage {
-            max-width: 95%;
-            max-height: 95%;
-            object-fit: contain;
+            display: block;
+            width: 100%;  /* FIX: Let image attempt to fill container width */
+            height: 100%; /* FIX: Let image attempt to fill container height */
+            object-fit: contain; /* This will scale it down to fit, maintaining aspect ratio */
             cursor: default;
             user-select: none;
         }
@@ -1252,7 +1267,7 @@
             }
 
             .tip-content img {
-                max-width: 100%; /* Ensures responsiveness in tip */
+                max-width: 100%;
             }
 
             .tip-content table {
@@ -1278,7 +1293,6 @@
                 </div>
             </div>
 
-            <!-- JSON Format Information Section -->
             <div class="json-format-info" id="jsonFormatInfo">
                 <div class="json-format-header" id="jsonFormatHeader">
                     <div class="json-format-title">
@@ -1304,7 +1318,7 @@
         "options": ["JavaScript", "C++", "Python", "Java"],
         "type": "multiple",
         "correct_answers": [0, 2],
-        "tip": "&lt;h4&gt;Web Development Languages&lt;/h4&gt;&lt;p&gt;[[opt1]] and [[opt3]] are correct:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;[[opt1]]&lt;/strong&gt; - Essential for front-end web development and also used on the server-side with Node.js&lt;/li&gt;&lt;li&gt;&lt;strong&gt;[[opt3]]&lt;/strong&gt; - Widely used for web development with frameworks like Django and Flask&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The other options:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;[[opt2]] is mainly used for system programming&lt;/li&gt;&lt;li&gt;[[opt4]] is primarily used for enterprise applications&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Here is a relevant image:&lt;/p&gt;&lt;img src='https://via.placeholder.com/300x150.png?text=Sample+Diagram' alt='Sample Diagram' style='max-width: 200px;'&gt;&lt;div class='alert alert-info'&gt;💡 Learn more at &lt;a href='https://developer.mozilla.org'&gt;MDN Web Docs&lt;/a&gt;&lt;/div&gt;"
+        "tip": "&lt;h4&gt;Web Development Languages&lt;/h4&gt;&lt;p&gt;[[opt1]] and [[opt3]] are correct:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;[[opt1]]&lt;/strong&gt; - Essential for front-end web development and also used on the server-side with Node.js&lt;/li&gt;&lt;li&gt;&lt;strong&gt;[[opt3]]&lt;/strong&gt; - Widely used for web development with frameworks like Django and Flask&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The other options:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;[[opt2]] is mainly used for system programming&lt;/li&gt;&lt;li&gt;[[opt4]] is primarily used for enterprise applications&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Here is a relevant image:&lt;/p&gt;&lt;img src='https://via.placeholder.com/800x400.png?text=Wide+Image' alt='Wide Image' style='max-width: 200px;'&gt;&lt;p&gt;And a tall one:&lt;/p&gt;&lt;img src='https://via.placeholder.com/400x800.png?text=Tall+Image' alt='Tall Image' style='max-width: 150px;'&gt;&lt;div class='alert alert-info'&gt;💡 Learn more at &lt;a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every/very_long_url_example_that_should_wrap_properly_within_the_tip_container_boundaries_to_avoid_any_horizontal_scrolling_issues_on_smaller_screens_or_when_the_text_is_excessively_long'&gt;MDN Web Docs (long link example)&lt;/a&gt;&lt;/div&gt;"
       }
     ]
   }
@@ -1328,7 +1342,7 @@
                             <li><strong>Text formatting:</strong> <code>&lt;b&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;u&gt;</code>, <code>&lt;mark&gt;</code></li>
                             <li><strong>Headings:</strong> <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> for organizing content</li>
                             <li><strong>Lists:</strong> <code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>, <code>&lt;li&gt;</code> for bullet points and numbered lists</li>
-                            <li><strong>Links:</strong> <code>&lt;a href="..."&gt;</code> for external resources</li>
+                            <li><strong>Links:</strong> <code>&lt;a href="..."&gt;</code> for external resources (long links will wrap)</li>
                             <li><strong>Images:</strong> <code>&lt;img src="..." alt="..."&gt;</code> for visual explanations (clickable for full screen)</li>
                             <li><strong>Code:</strong> <code>&lt;code&gt;</code> and <code>&lt;pre&gt;</code> for code snippets</li>
                             <li><strong>Tables:</strong> <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;th&gt;</code>, <code>&lt;td&gt;</code> for data</li>
@@ -1373,7 +1387,7 @@
                             <li>HTML tags must be properly escaped in JSON: <code>&lt;</code> instead of <code><</code>, <code>&gt;</code> instead of <code>></code></li>
                             <li>Use <code>&amp;quot;</code> for quotes inside HTML attributes within JSON strings</li>
                             <li>Images and external links will work if the URLs are accessible</li>
-                            <li>Images in tips are clickable to open in a full-screen viewer</li>
+                            <li>Images in tips are clickable to open in a full-screen viewer (scaled to fit screen)</li>
                             <li>Custom CSS classes like <code>alert</code>, <code>alert-info</code>, <code>alert-success</code>, <code>alert-warning</code>, <code>alert-danger</code>, and <code>highlight</code> are available</li>
                         </ul>
                     </div>
@@ -1500,13 +1514,11 @@ You can also right-click and select 'Paste'."></textarea>
         </div>
     </div>
 
-    <!-- Full-screen image viewer -->
     <div id="imageViewer" class="image-viewer">
         <img id="fullScreenImage" src="" alt="Full screen view">
     </div>
 
     <script>
-        // Copy JSON example function
         function copyJsonExample() {
             const jsonText = document.getElementById('jsonExample').textContent.replace(/Copy$/, '').trim();
             const button = document.querySelector('.copy-json-btn');
@@ -1570,9 +1582,9 @@ You can also right-click and select 'Paste'."></textarea>
                 this.quizResults = null;
                 this.optionMappings = {};
                 
-                this.originalBodyOverflow = ''; // For image viewer
-                this.boundHandleTipImageClick = this.handleTipImageClick.bind(this); // For event delegation
-                this.boundHandleEscapeKey = this.handleEscapeKey.bind(this); // For Escape key closing image viewer
+                this.originalScrollPosition = { x: 0, y: 0 };
+                this.boundHandleTipImageClick = this.handleTipImageClick.bind(this);
+                this.boundHandleEscapeKey = this.handleEscapeKey.bind(this);
 
                 this.initializeElements();
                 this.attachEventListeners();
@@ -1581,7 +1593,6 @@ You can also right-click and select 'Paste'."></textarea>
             }
 
             initializeElements() {
-                // Setup elements
                 this.fileInput = document.getElementById('fileInput');
                 this.fileStatus = document.getElementById('fileStatus');
                 this.jsonTextarea = document.getElementById('jsonTextarea');
@@ -1626,7 +1637,6 @@ You can also right-click and select 'Paste'."></textarea>
                 this.resultDetails = document.getElementById('resultDetails');
                 this.backToSetupFromResultsBtn = document.getElementById('backToSetupFromResults');
 
-                // Image Viewer Elements
                 this.imageViewer = document.getElementById('imageViewer');
                 this.fullScreenImage = document.getElementById('fullScreenImage');
             }
@@ -1669,28 +1679,27 @@ You can also right-click and select 'Paste'."></textarea>
                     if (document.hidden) this.saveProgress();
                 });
 
-                // Image viewer event listener
                 this.imageViewer.addEventListener('click', () => this.closeFullScreenImage());
             }
 
-            // Image Viewer Methods
             openFullScreenImage(src) {
+                this.originalScrollPosition.x = window.scrollX;
+                this.originalScrollPosition.y = window.scrollY;
+
                 this.fullScreenImage.setAttribute('src', src);
                 this.imageViewer.classList.add('show');
-
-                this.originalBodyOverflow = document.body.style.overflow;
-                document.body.style.overflow = 'hidden';
+                document.body.classList.add('no-scroll');
                 
                 document.addEventListener('keydown', this.boundHandleEscapeKey);
             }
 
             closeFullScreenImage() {
-                if (!this.imageViewer.classList.contains('show')) return; // Already closed
-
+                if (!this.imageViewer.classList.contains('show')) return;
                 this.imageViewer.classList.remove('show');
-                this.fullScreenImage.setAttribute('src', ''); // Clear src
-
-                document.body.style.overflow = this.originalBodyOverflow;
+                document.body.classList.remove('no-scroll');
+                this.fullScreenImage.setAttribute('src', '');
+                
+                window.scrollTo(this.originalScrollPosition.x, this.originalScrollPosition.y);
                 document.removeEventListener('keydown', this.boundHandleEscapeKey);
             }
             
@@ -1711,14 +1720,10 @@ You can also right-click and select 'Paste'."></textarea>
                     this.openFullScreenImage(event.target.src);
                 }
             }
-            // End Image Viewer Methods
-
 
             toggleJsonFormatInfo() {
-                const isExpanded = this.jsonFormatInfo.classList.contains('expanded');
                 this.jsonFormatInfo.classList.toggle('expanded');
                 this.jsonFormatContent.classList.toggle('expanded');
-                localStorage.setItem('jsonFormatExpanded', !isExpanded);
             }
 
             switchTab(tabName) {
@@ -2085,7 +2090,6 @@ You can also right-click and select 'Paste'."></textarea>
                 this.submitBtn.textContent = 'Submitted';
                 document.querySelectorAll('.option').forEach(option => {
                     option.classList.add('disabled');
-                    option.style.cursor = 'not-allowed'; // Redundant due to .disabled, but for clarity
                 });
                 this.saveProgress();
             }
@@ -2137,7 +2141,7 @@ You can also right-click and select 'Paste'."></textarea>
                     const processedTip = this.processOptionReferences(originalQuestion.tip, originalQuestion, this.currentQuestionIndex);
                     this.tipText.innerHTML = processedTip;
                     this.tipContainer.classList.add('show');
-                    this.attachTipImageListeners(); // Attach listeners after tip content is set
+                    this.attachTipImageListeners();
                 }
             }
 
@@ -2196,15 +2200,15 @@ You can also right-click and select 'Paste'."></textarea>
 
             backToSetup() {
                 clearInterval(this.timerInterval);
-                this.clearProgress(); // Clear progress when going back to setup
+                this.clearProgress(); 
                 this.currentState = 'setup';
                 this.quizContainer.style.display = 'none';
                 this.resultsContainer.style.display = 'none';
                 this.setupPanel.style.display = 'block';
-                this.fileInput.value = ''; // Reset file input
-                this.jsonTextarea.value = ''; // Reset textarea
-                this.fileStatus.classList.add('hidden'); // Hide file status
-                this.startQuizBtn.disabled = true; // Disable start button
+                this.fileInput.value = '';
+                this.jsonTextarea.value = '';
+                this.fileStatus.classList.add('hidden');
+                this.startQuizBtn.disabled = true;
             }
 
             toggleDarkMode(enabled) {
@@ -2236,11 +2240,6 @@ You can also right-click and select 'Paste'."></textarea>
                     this.shuffleAnswersToggle.checked = settings.shuffleAnswers || false;
                     this.darkModeToggle.checked = settings.darkMode || false;
                     this.toggleDarkMode(settings.darkMode);
-                }
-                const expanded = localStorage.getItem('jsonFormatExpanded');
-                if (expanded === 'true') {
-                    this.jsonFormatInfo.classList.add('expanded');
-                    this.jsonFormatContent.classList.add('expanded');
                 }
             }
         }
